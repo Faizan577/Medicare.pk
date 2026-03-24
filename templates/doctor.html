@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Doctor Dashboard</h1>
+    {% if current %}
+    <p><strong>Currently Serving:</strong> Token {{ current.token }} - {{ current.name }}</p>
+    <a href="{{ url_for('complete') }}">Mark as Complete</a>
+    {% else %}
+    <p>No patient currently being served.</p>
+    {% endif %}
+    <a href="{{ url_for('call_next') }}">Call Next Patient</a>
+    <h2>Upcoming Queue</h2>
+    <ul>
+    {% for patient in queue %}
+        <li>Token {{ patient.token }} - {{ patient.name }} {% if patient.emergency %}(Emergency){% endif %}</li>
+    {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

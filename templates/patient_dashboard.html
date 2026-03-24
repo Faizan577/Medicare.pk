@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; }
+        .btn-custom { margin: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Smart Queue System</h1>
+        <p>Welcome, {{ current_user.name }} | <a href="{{ url_for('logout') }}" class="text-white">Logout</a></p>
+    </div>
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Book Appointment</h5>
+                        <form method="post" action="{{ url_for('book_appointment') }}">
+                            <div class="mb-3">
+                                <select class="form-control" name="doctor_id" required>
+                                    {% for doctor in doctors %}
+                                    <option value="{{ doctor.id }}">{{ doctor.user.name }} - {{ doctor.specialty }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="datetime-local" class="form-control" name="date_time" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Join Queue</h5>
+                        <form method="post" action="{{ url_for('join_queue') }}">
+                            <div class="mb-3">
+                                <select class="form-control" name="doctor_id" required>
+                                    {% for doctor in doctors %}
+                                    <option value="{{ doctor.id }}">{{ doctor.user.name }} - {{ doctor.specialty }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="emergency" id="emergency">
+                                <label class="form-check-label" for="emergency">Emergency</label>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Join Queue</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Doctor Availability</h5>
+                        <ul class="list-group">
+                            {% for doctor in doctors %}
+                            <li class="list-group-item">{{ doctor.user.name }} - {{ doctor.specialty }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if queue_entry %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Queue Status</h5>
+                        <p>Token: <strong>{{ queue_entry.token }}</strong></p>
+                        <p>Position: <span id="position">{{ queue_entry.position }}</span></p>
+                        <p>Estimated Wait: <span id="wait">{{ (queue_entry.position * 10) }} minutes</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Appointments</h5>
+                        <ul class="list-group">
+                            {% for appt in appointments %}
+                            <li class="list-group-item">{{ appt.date_time.strftime('%Y-%m-%d %H:%M') }} with {{ appt.doctor_rel.user.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Polling for queue status
+        setInterval(() => {
+            fetch('/api/queue_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.position) {
+                    document.getElementById('position').textContent = data.position;
+                    document.getElementById('wait').textContent = data.waiting_time + ' minutes';
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

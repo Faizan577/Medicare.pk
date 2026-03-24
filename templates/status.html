@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Token Status</h1>
+    <p>Token: {{ token }}</p>
+    <p>Position in Queue: {{ position }}</p>
+    <p>Estimated Wait Time: {{ wait }} minutes</p>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>
