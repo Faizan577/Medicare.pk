@@ -98,6 +98,33 @@ const updateQueuePositions = (doctorId, callback) => {
     });
 };
 
+// Authentication middleware
+function authorize(req, res, next) {
+    const authHeader = req.headers.authorization;
+    const sessionUser = req.session && req.session.user;
+
+    if (sessionUser) {
+        req.user = sessionUser;
+        return next();
+    }
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    try {
+        const payload = jwt.verify(token, SECRET_KEY);
+        db.get('SELECT id, name, email, role, phone FROM users WHERE id = ?', [payload.id], (err, user) => {
+            if (err || !user) return res.status(401).json({ error: 'Unauthorized' });
+            req.user = user;
+            next();
+        });
+    } catch (err) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+}
+
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -111,7 +138,8 @@ app.post('/register', (req, res) => {
         if (role === 'doctor') {
             db.run("INSERT INTO doctors (user_id, specialty, schedule) VALUES (?, ?, ?)", [this.lastID, specialty, '{}']);
         }
-        res.json({ message: 'Registration successful' });
+        const token = jwt.sign({ id: this.lastID, role }, SECRET_KEY, { expiresIn: '8h' });
+        res.json({ message: 'Registration successful', token, user: { id: this.lastID, name, email, role } });
     });
 });
 
@@ -121,15 +149,15 @@ app.post('/login', (req, res) => {
         if (!user || !bcrypt.compareSync(password, user.password_hash)) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
-        const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY);
-        req.session.user = user;
-        res.json({ token, user });
+        const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, { expiresIn: '8h' });
+        req.session.user = { id: user.id, name: user.name, email: user.email, role: user.role };
+        res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
     });
 });
 
-app.post('/book-appointment', (req, res) => {
+app.post('/book-appointment', authorize, (req, res) => {
     const { doctorId, dateTime } = req.body;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'patient') return res.status(403).json({ error: 'Unauthorized' });
     db.run("INSERT INTO appointments (patient_id, doctor_id, date_time) VALUES (?, ?, ?)", [user.id, doctorId, dateTime], function(err) {
         if (err) return res.status(400).json({ error: 'Booking failed' });
@@ -137,9 +165,9 @@ app.post('/book-appointment', (req, res) => {
     });
 });
 
-app.post('/join-queue', (req, res) => {
+app.post('/join-queue', authorize, (req, res) => {
     const { doctorId, emergency } = req.body;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'patient') return res.status(403).json({ error: 'Unauthorized' });
     const token = generateToken();
     db.run("INSERT INTO queue (patient_id, doctor_id, token, emergency) VALUES (?, ?, ?, ?)", [user.id, doctorId, token, emergency ? 1 : 0], function(err) {
@@ -150,8 +178,8 @@ app.post('/join-queue', (req, res) => {
     });
 });
 
-app.get('/queue-status', (req, res) => {
-    const user = req.session.user;
+app.get('/queue-status', authorize, (req, res) => {
+    const user = req.user;
     if (!user || user.role !== 'patient') return res.status(403).json({ error: 'Unauthorized' });
     db.get("SELECT position FROM queue WHERE patient_id = ?", [user.id], (err, row) => {
         if (!row) return res.json({ position: null });
@@ -166,8 +194,8 @@ app.get('/doctors', (req, res) => {
     });
 });
 
-app.get('/doctor-dashboard', (req, res) => {
-    const user = req.session.user;
+app.get('/doctor-dashboard', authorize, (req, res) => {
+    const user = req.user;
     if (!user || user.role !== 'doctor') return res.status(403).json({ error: 'Unauthorized' });
     db.get("SELECT id FROM doctors WHERE user_id = ?", [user.id], (err, doctor) => {
         db.all("SELECT q.id, q.token, u.name, q.emergency, q.position FROM queue q JOIN users u ON q.patient_id = u.id WHERE q.doctor_id = ? ORDER BY q.position", [doctor.id], (err, queues) => {
@@ -178,9 +206,9 @@ app.get('/doctor-dashboard', (req, res) => {
     });
 });
 
-app.post('/call-next/:queueId', (req, res) => {
+app.post('/call-next/:queueId', authorize, (req, res) => {
     const { queueId } = req.params;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'doctor') return res.status(403).json({ error: 'Unauthorized' });
     db.get("SELECT doctor_id, patient_id FROM queue WHERE id = ?", [queueId], (err, queue) => {
         if (!queue) return res.status(404).json({ error: 'Queue entry not found' });
@@ -197,17 +225,17 @@ app.post('/call-next/:queueId', (req, res) => {
     });
 });
 
-app.post('/complete-appointment/:apptId', (req, res) => {
+app.post('/complete-appointment/:apptId', authorize, (req, res) => {
     const { apptId } = req.params;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'doctor') return res.status(403).json({ error: 'Unauthorized' });
     db.run("UPDATE appointments SET status = 'completed' WHERE id = ? AND doctor_id IN (SELECT id FROM doctors WHERE user_id = ?)", [apptId, user.id], function() {
         res.json({ message: 'Appointment completed' });
     });
 });
 
-app.get('/admin-dashboard', (req, res) => {
-    const user = req.session.user;
+app.get('/admin-dashboard', authorize, (req, res) => {
+    const user = req.user;
     if (!user || user.role !== 'admin') return res.status(403).json({ error: 'Unauthorized' });
     db.all("SELECT d.id, u.name, d.specialty FROM doctors d JOIN users u ON d.user_id = u.id", (err, doctors) => {
         db.get("SELECT COUNT(*) as count FROM users WHERE role = 'patient'", (err, patients) => {
@@ -218,9 +246,9 @@ app.get('/admin-dashboard', (req, res) => {
     });
 });
 
-app.post('/add-doctor', (req, res) => {
+app.post('/add-doctor', authorize, (req, res) => {
     const { name, email, specialty } = req.body;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'admin') return res.status(403).json({ error: 'Unauthorized' });
     const hashed = bcrypt.hashSync('defaultpass', 10);
     db.run("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)", [name, email, hashed, 'doctor'], function(err) {
@@ -230,9 +258,9 @@ app.post('/add-doctor', (req, res) => {
     });
 });
 
-app.delete('/remove-doctor/:doctorId', (req, res) => {
+app.delete('/remove-doctor/:doctorId', authorize, (req, res) => {
     const { doctorId } = req.params;
-    const user = req.session.user;
+    const user = req.user;
     if (!user || user.role !== 'admin') return res.status(403).json({ error: 'Unauthorized' });
     db.run("DELETE FROM doctors WHERE id = ?", [doctorId]);
     res.json({ message: 'Doctor removed' });

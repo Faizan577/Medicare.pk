@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - MediQueue</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/auth.css" rel="stylesheet">
+</head>
+
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <h1><i class="fas fa-hospital-user"></i> MediQueue</h1>
+                <p id="headerSubtitle">Secure Access to Your Dashboard</p>
+            </div>
+
+            <!-- Body -->
+            <div class="auth-body">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+
+                <!-- Login Form -->
+                <form id="loginForm" style="display: none;">
+                    <div id="loginError"></div>
+                    
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="button" class="btn-auth btn-submit" onclick="handleLogin()">Sign In</button>
+
+                    <div class="toggle-auth">
+                        New user? <a onclick="switchToRegister()">Create account</a>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" style="display: none;">
+                    <div id="registerError"></div>
+
+                    <div class="form-group">
+                        <label>I am a:</label>
+                        <div class="role-select">
+                            <div class="role-option">
+                                <input type="radio" id="rolePatient" name="role" value="patient" checked>
+                                <label for="rolePatient" class="role-label">
+                                    <i class="fas fa-user"></i> Patient
+                                </label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="roleDoctor" name="role" value="doctor">
+                                <label for="roleDoctor" class="role-label">
+                                    <i class="fas fa-stethoscope"></i> Doctor
+                                </label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="roleAdmin" name="role" value="admin">
+                                <label for="roleAdmin" class="role-label">
+                                    <i class="fas fa-user-tie"></i> Admin
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" class="form-control" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group phone-field" id="phoneField">
+                        <label for="regPhone">Phone Number</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="+92 000 0000000">
+                    </div>
+
+                    <div class="form-group specialty-field" id="specialtyField">
+                        <label for="regSpecialty">Medical Specialty</label>
+                        <input type="text" id="regSpecialty" class="form-control" placeholder="e.g., Cardiology" required>
+                    </div>
+
+                    <button type="button" class="btn-auth btn-submit" onclick="handleRegister()">Create Account</button>
+
+                    <div class="toggle-auth">
+                        Already have account? <a onclick="switchToLogin()">Sign in</a>
+                    </div>
+                </form>
+
+                <!-- Loading Indicator -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px; color: #667eea;">Processing...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const authType = urlParams.get('type') || 'login';
+        const preSelectedRole = urlParams.get('role') || 'patient';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeAuth();
+        });
+
+        function initializeAuth() {
+            // Set the form based on URL parameter
+            if (authType === 'signup' || authType === 'register') {
+                showRegisterForm();
+            } else {
+                showLoginForm();
+            }
+
+            // Set pre-selected role
+            const roleRadio = document.querySelector(`input[value="${preSelectedRole}"]`);
+            if (roleRadio) {
+                roleRadio.checked = true;
+                updateSpecialtyField();
+                updatePhoneField();
+            }
+
+            // Add event listeners for role changes
+            document.querySelectorAll('input[name="role"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    updateSpecialtyField();
+                    updatePhoneField();
+                });
+            });
+
+            // Add keypress listeners
+            addKeyPressListeners();
+
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('headerSubtitle').textContent = 'Sign in to your account';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('headerSubtitle').textContent = 'Create your account';
+        }
+
+        function switchToLogin() {
+            clearErrors();
+            showLoginForm();
+        }
+
+        function switchToRegister() {
+            clearErrors();
+            showRegisterForm();
+        }
+
+        function updateSpecialtyField() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const specialtyField = document.getElementById('specialtyField');
+            specialtyField.classList.toggle('active', role === 'doctor');
+        }
+
+        function updatePhoneField() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const phoneField = document.getElementById('phoneField');
+            phoneField.classList.toggle('active', role === 'patient' || role === 'doctor');
+        }
+
+        function clearErrors() {
+            document.getElementById('loginError').innerHTML = '';
+            document.getElementById('registerError').innerHTML = '';
+        }
+
+        function showError(formId, message) {
+            const errorDiv = document.getElementById(formId === 'login' ? 'loginError' : 'registerError');
+            errorDiv.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('loginForm').style.display = show ? 'none' : (document.getElementById('registerForm').style.display === 'none' ? 'block' : 'none');
+            document.getElementById('registerForm').style.display = show ? 'none' : document.getElementById('registerForm').style.display;
+        }
+
+        async function handleLogin() {
+            clearErrors();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showError('login', 'Please fill all fields');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('login', 'Please enter a valid email address');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    const role = result.user.role;
+                    setTimeout(() => {
+                        window.location.href = role === 'patient' ? 'patient.html' : role === 'doctor' ? 'doctor.html' : 'admin.html';
+                    }, 500);
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('loginForm').style.display = 'block';
+                    showError('login', result.error || 'Login failed. Please try again.');
+                }
+            } catch (err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+                showError('login', 'Network error. Please check your connection.');
+            }
+        }
+
+        async function handleRegister() {
+            clearErrors();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const phone = document.getElementById('regPhone').value.trim();
+            const specialty = document.getElementById('regSpecialty').value.trim();
+
+            if (!name || !email || !password) {
+                showError('register', 'Please fill all required fields');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('register', 'Please enter a valid email address');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('register', 'Password must be at least 6 characters');
+                return;
+            }
+
+            if (role === 'doctor' && !specialty) {
+                showError('register', 'Please enter your medical specialty');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role, phone: phone || null, specialty: specialty || null })
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    const role = result.user.role;
+                    setTimeout(() => {
+                        window.location.href = role === 'patient' ? 'patient.html' : role === 'doctor' ? 'doctor.html' : 'admin.html';
+                    }, 500);
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('registerForm').style.display = 'block';
+                    showError('register', result.error || 'Registration failed. Please try again.');
+                }
+            } catch (err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+                showError('register', 'Network error. Please check your connection.');
+            }
+        }
+
+        function addKeyPressListeners() {
+            document.getElementById('loginEmail').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            document.getElementById('regEmail').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleRegister();
+            });
+
+            document.getElementById('regPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleRegister();
+            });
+        }
+    </script>
+</body>
+</html>

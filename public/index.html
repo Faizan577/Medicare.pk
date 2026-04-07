@@ -3,126 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Queue System</title>
+    <title>MediQueue - Smart Healthcare Queue Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .hero { text-align: center; }
-        .btn-custom { margin: 10px; padding: 15px 30px; font-size: 18px; border-radius: 50px; transition: all 0.3s; }
-        .btn-custom:hover { transform: scale(1.05); }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container hero">
-        <h1 class="display-4">Smart Queue System</h1>
-        <p class="lead">Efficient queue management for hospitals and clinics</p>
-        <button class="btn btn-light btn-custom" onclick="showRegister()">Get Started</button>
-        <button class="btn btn-outline-light btn-custom" onclick="showLogin()">Login</button>
-    </div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <i class="fas fa-hospital-user"></i> MediCare
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboards">Dashboards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-nav-auth btn-nav-login" onclick="goToAuth('login')">Login</button>
+                <button type="button" class="btn btn-nav-auth btn-nav-signup" onclick="goToAuth('signup')">Sign Up</button>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Register</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1>Revolutionize Healthcare Queue Management</h1>
+                    <p>Reduce wait times, improve patient experience, and streamline clinic operations with intelligent queue management.</p>
+                    <div class="hero-buttons">
+                        <button type="button" class="btn-hero btn-hero-primary" onclick="goToAuth('signup')">Get Started Free</button>
+                        <button type="button" class="btn-hero btn-hero-secondary" onclick="scrollToFeatures()">Learn More</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="registerForm">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Name" id="regName" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Email" id="regEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Password" id="regPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <select class="form-control" id="regRole" required>
-                                <option value="patient">Patient</option>
-                                <option value="doctor">Doctor</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="mb-3" id="specialtyField" style="display:none;">
-                            <input type="text" class="form-control" placeholder="Specialty" id="regSpecialty">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </form>
+                <div class="col-lg-6 hero-image">
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose MediQueue?</h2>
+                <p>Experience the future of healthcare queue management with cutting-edge features</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Real-Time Tracking</h3>
+                        <p>Monitor queue status in real-time with live updates and accurate wait time estimates.</p>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Email" id="loginEmail" required>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-check"></i>
                         </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Password" id="loginPassword" required>
+                        <h3>Smart Scheduling</h3>
+                        <p>Book appointments instantly with intelligent scheduling and automatic optimization.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heartbeat"></i>
                         </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
+                        <h3>Emergency Priority</h3>
+                        <p>Automatically prioritize emergency cases and critical patients for faster service.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h3>Performance Analytics</h3>
+                        <p>Get detailed insights and analytics to improve clinic efficiency and patient satisfaction.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Dashboards Section -->
+    <section class="dashboards" id="dashboards">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tailored Dashboards for Everyone</h2>
+                <p>Specialized interfaces for patients, doctors, and administrators</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-item">
+                        <div class="dashboard-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Patient Portal</h3>
+                        <p>Book appointments, join queues, track status, and receive notifications in real-time.</p>
+                        <button type="button" class="btn-dashboard" onclick="goToAuth('signup', 'patient')">Explore Patient</button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-item">
+                        <div class="dashboard-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h3>Doctor Dashboard</h3>
+                        <p>Manage patient queues, view appointments, and optimize consultation flow effortlessly.</p>
+                        <button type="button" class="btn-dashboard" onclick="goToAuth('signup', 'doctor')">Explore Doctor</button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-item">
+                        <div class="dashboard-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Admin Panel</h3>
+                        <p>Manage doctors, monitor system statistics, and oversee all operations with ease.</p>
+                        <button type="button" class="btn-dashboard" onclick="goToAuth('signup', 'admin')">Explore Admin</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Patient Satisfaction</div>
+                </div>
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">50%</div>
+                    <div class="stat-label">Reduction in Wait Times</div>
+                </div>
+                <div class="col-md-4 stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="about">
+        <div class="container">
+            <h2>Ready to Transform Your Clinic?</h2>
+            <p>Join thousands of healthcare facilities improving patient care with MediQueue</p>
+            <div class="cta-buttons">
+                <button type="button" class="btn-hero btn-hero-primary" onclick="goToAuth('signup')">Start Free Trial</button>
+                <button type="button" class="btn-hero btn-hero-secondary" onclick="goToAuth('login')">Sign In</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 MediQueue. All rights reserved. | Transforming Healthcare, One Queue at a Time</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function showRegister() {
-            new bootstrap.Modal(document.getElementById('registerModal')).show();
-        }
-        function showLogin() {
-            new bootstrap.Modal(document.getElementById('loginModal')).show();
-        }
-
-        document.getElementById('regRole').addEventListener('change', function() {
-            document.getElementById('specialtyField').style.display = this.value === 'doctor' ? 'block' : 'none';
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                name: document.getElementById('regName').value,
-                email: document.getElementById('regEmail').value,
-                password: document.getElementById('regPassword').value,
-                role: document.getElementById('regRole').value,
-                specialty: document.getElementById('regSpecialty').value
-            };
-            const res = await fetch('/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            const result = await res.json();
-            alert(result.message || result.error);
-            if (res.ok) bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
-        });
-
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
-            };
-            const res = await fetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            const result = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', result.token);
-                localStorage.setItem('user', JSON.stringify(result.user));
-                window.location.href = result.user.role === 'patient' ? 'patient.html' : result.user.role === 'doctor' ? 'doctor.html' : 'admin.html';
-            } else {
-                alert(result.error);
+        function goToAuth(type, role = null) {
+            try {
+                let url = '/auth.html?type=' + type;
+                if (role) {
+                    url += '&role=' + role;
+                }
+                window.location.href = url;
+            } catch (error) {
+                console.error('Navigation error:', error);
+                alert('Unable to navigate. Please try again.');
             }
-        });
+        }
+
+        function scrollToFeatures() {
+            const featuresSection = document.getElementById('features');
+            if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
     </script>
 </body>
 </html>

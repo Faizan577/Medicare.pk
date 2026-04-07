@@ -3,60 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Admin Panel - MediQueue</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar { width: 250px; position: fixed; top: 0; left: 0; height: 100%; background: #343a40; color: white; padding-top: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px; }
-        .sidebar a:hover { background: #495057; }
-        .content { margin-left: 250px; padding: 20px; }
-        .card { margin-bottom: 20px; }
-    </style>
-</head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <link href="css/admin.css" rel="stylesheet">
+
+    <link href="css/admin.css" rel="stylesheet">
+
+    <link href="css/admin.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h4 class="text-center">Smart Queue</h4>
-        <a href="#stats"><i class="fas fa-chart-bar"></i> Statistics</a>
-        <a href="#doctors"><i class="fas fa-user-md"></i> Manage Doctors</a>
-        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </div>
-    <div class="content">
-        <h1>Admin Panel</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card" id="stats">
-                    <div class="card-body">
-                        <h5 class="card-title">Statistics</h5>
-                        <p>Total Patients: <span id="totalPatients">-</span></p>
-                        <p>Total Appointments: <span id="totalAppointments">-</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Add Doctor</h5>
-                        <form id="addDoctorForm">
-                            <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Name" id="docName" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="email" class="form-control" placeholder="Email" id="docEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Specialty" id="docSpecialty" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Doctor</button>
-                        </form>
-                    </div>
+        <div class="sidebar-brand">
+            <i class="fas fa-hospital"></i>
+            <span>MediQueue</span>
+        </div>
+        <nav>
+            <a href="#stats" class="active">
+                <i class="fas fa-chart-bar"></i>
+                <span>Statistics</span>
+            </a>
+            <a href="#doctors">
+                <i class="fas fa-user-md"></i>
+                <span>Manage Doctors</span>
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+        <div class="user-profile">
+            <div class="user-profile-info">
+                <div class="user-avatar" id="userInitial">A</div>
+                <div>
+                    <div class="user-name" id="userName">Admin</div>
+                    <div class="user-role">Administrator</div>
                 </div>
             </div>
         </div>
-        <div class="card" id="doctors">
-            <div class="card-body">
-                <h5 class="card-title">Doctors</h5>
-                <ul id="doctorList" class="list-group"></ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="header">
+            <h1>Administration Dashboard</h1>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-value" id="totalPatients">0</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="stat-label">Total Appointments</div>
+                <div class="stat-value" id="totalAppointments">0</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-stethoscope"></i>
+                <div class="stat-label">Total Doctors</div>
+                <div class="stat-value" id="totalDoctors">0</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid-container">
+            <!-- Add Doctor Card -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i>
+                    <h5>Add New Doctor</h5>
+                </div>
+                <div class="card-body">
+                    <form id="addDoctorForm">
+                        <div class="form-group">
+                            <label for="docName">Full Name</label>
+                            <input type="text" id="docName" class="form-control" placeholder="Dr. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="docEmail">Email Address</label>
+                            <input type="email" id="docEmail" class="form-control" placeholder="doctor@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="docSpecialty">Medical Specialty</label>
+                            <input type="text" id="docSpecialty" class="form-control" placeholder="e.g., Cardiology" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Add Doctor</button>
+                    </form>
+                    <div id="addDoctorMessage"></div>
+                </div>
+            </div>
+
+            <!-- Doctor List Card -->
+            <div class="card" id="doctors">
+                <div class="card-header">
+                    <i class="fas fa-stethoscope"></i>
+                    <h5>Manage Doctors</h5>
+                </div>
+                <div class="card-body">
+                    <div id="doctorList"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -64,6 +114,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) window.location.href = 'index.html';
+
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
 
         function logout() {
             localStorage.clear();
@@ -71,16 +127,32 @@
         }
 
         async function loadDashboard() {
-            const res = await fetch('/admin-dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
-            const data = await res.json();
-            document.getElementById('totalPatients').textContent = data.totalPatients;
-            document.getElementById('totalAppointments').textContent = data.totalAppointments;
-            document.getElementById('doctorList').innerHTML = data.doctors.map(d => `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${d.name} - ${d.specialty}
-                    <button class="btn btn-danger btn-sm" onclick="removeDoctor(${d.id})">Remove</button>
-                </li>
-            `).join('');
+            try {
+                const res = await fetch('/admin-dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+
+                document.getElementById('totalPatients').textContent = data.totalPatients;
+                document.getElementById('totalAppointments').textContent = data.totalAppointments;
+                document.getElementById('totalDoctors').textContent = data.doctors.length;
+
+                if (data.doctors.length > 0) {
+                    document.getElementById('doctorList').innerHTML = data.doctors.map(d => `
+                        <div class="doctor-item">
+                            <div class="doctor-info">
+                                <div class="doctor-name"><i class="fas fa-user-md"></i> ${d.name}</div>
+                                <p class="doctor-specialty">${d.specialty}</p>
+                            </div>
+                            <button class="btn-danger" onclick="removeDoctor(${d.id})">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('doctorList').innerHTML = '<div class="empty-state"><i class="fas fa-user-md"></i><p>No doctors added yet</p></div>';
+                }
+            } catch (err) {
+                console.error('Error loading dashboard:', err);
+            }
         }
 
         document.getElementById('addDoctorForm').addEventListener('submit', async (e) => {
@@ -90,27 +162,45 @@
                 email: document.getElementById('docEmail').value,
                 specialty: document.getElementById('docSpecialty').value
             };
-            const res = await fetch('/add-doctor', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(data)
-            });
-            const result = await res.json();
-            alert(result.message || result.error);
-            loadDashboard();
+
+            try {
+                const res = await fetch('/add-doctor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                const msg = document.getElementById('addDoctorMessage');
+
+                if (res.ok) {
+                    msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + '</div>';
+                    document.getElementById('addDoctorForm').reset();
+                    loadDashboard();
+                } else {
+                    msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Failed to add doctor') + '</div>';
+                }
+            } catch (err) {
+                document.getElementById('addDoctorMessage').innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Network error</div>';
+            }
         });
 
         async function removeDoctor(doctorId) {
-            const res = await fetch(`/remove-doctor/${doctorId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const result = await res.json();
-            alert(result.message || result.error);
-            loadDashboard();
+            if (confirm('Are you sure you want to remove this doctor?')) {
+                try {
+                    const res = await fetch(`/remove-doctor/${doctorId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const result = await res.json();
+                    loadDashboard();
+                } catch (err) {
+                    alert('Error removing doctor');
+                }
+            }
         }
 
         loadDashboard();
     </script>
 </body>
 </html>
+

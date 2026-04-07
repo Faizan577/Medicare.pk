@@ -3,73 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Portal</title>
+    <title>Patient Portal - MediQueue</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar { width: 250px; position: fixed; top: 0; left: 0; height: 100%; background: #343a40; color: white; padding-top: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px; }
-        .sidebar a:hover { background: #495057; }
-        .content { margin-left: 250px; padding: 20px; }
-        .card { margin-bottom: 20px; }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/patient.css" rel="stylesheet">
 </head>
+
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h4 class="text-center">Smart Queue</h4>
-        <a href="#book"><i class="fas fa-calendar"></i> Book Appointment</a>
-        <a href="#queue"><i class="fas fa-list"></i> Join Queue</a>
-        <a href="#status"><i class="fas fa-clock"></i> Queue Status</a>
-        <a href="#doctors"><i class="fas fa-user-md"></i> Doctors</a>
-        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </div>
-    <div class="content">
-        <h1>Patient Portal</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card" id="book">
-                    <div class="card-body">
-                        <h5 class="card-title">Book Appointment</h5>
-                        <form id="bookForm">
-                            <select class="form-control mb-3" id="doctorSelect" required></select>
-                            <input type="datetime-local" class="form-control mb-3" id="dateTime" required>
-                            <button type="submit" class="btn btn-primary">Book</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card" id="queue">
-                    <div class="card-body">
-                        <h5 class="card-title">Join Queue</h5>
-                        <form id="queueForm">
-                            <select class="form-control mb-3" id="queueDoctorSelect" required></select>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="emergency">
-                                <label class="form-check-label">Emergency</label>
-                            </div>
-                            <button type="submit" class="btn btn-warning">Join Queue</button>
-                        </form>
-                    </div>
+        <div class="sidebar-brand">
+            <i class="fas fa-hospital"></i>
+            <span>MediQueue</span>
+        </div>
+        <nav>
+            <a href="#book" class="active">
+                <i class="fas fa-calendar-check"></i>
+                <span>Book Appointment</span>
+            </a>
+            <a href="#queue">
+                <i class="fas fa-list"></i>
+                <span>Join Queue</span>
+            </a>
+            <a href="#status">
+                <i class="fas fa-clock"></i>
+                <span>Queue Status</span>
+            </a>
+            <a href="#doctors">
+                <i class="fas fa-stethoscope"></i>
+                <span>Doctors</span>
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+        <div class="user-profile">
+            <div class="user-profile-info">
+                <div class="user-avatar" id="userInitial">P</div>
+                <div>
+                    <div class="user-name" id="userName">Patient</div>
+                    <div class="user-role">Patient</div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card" id="status">
-                    <div class="card-body">
-                        <h5 class="card-title">Queue Status</h5>
-                        <p>Position: <span id="position">-</span></p>
-                        <p>Estimated Wait: <span id="wait">-</span></p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="header">
+            <div>
+                <h1>Welcome Back</h1>
+                <div class="time" id="currentTime"></div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <!-- Book Appointment Card -->
+            <div class="card" id="book">
+                <div class="card-header">
+                    <i class="fas fa-calendar-check"></i>
+                    <h5>Book Appointment</h5>
+                </div>
+                <div class="card-body">
+                    <form id="bookForm">
+                        <div class="form-group">
+                            <label for="doctorSelect">Select Doctor</label>
+                            <select id="doctorSelect" class="form-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateTime">Date & Time</label>
+                            <input type="datetime-local" id="dateTime" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Book Appointment</button>
+                    </form>
+                    <div id="bookMessage"></div>
+                </div>
+            </div>
+
+            <!-- Join Queue Card -->
+            <div class="card" id="queue">
+                <div class="card-header">
+                    <i class="fas fa-list"></i>
+                    <h5>Join Queue</h5>
+                </div>
+                <div class="card-body">
+                    <form id="queueForm">
+                        <div class="form-group">
+                            <label for="queueDoctorSelect">Select Doctor</label>
+                            <select id="queueDoctorSelect" class="form-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="emergency" style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="emergency" style="margin: 0; cursor: pointer; font-weight: 500;">Mark as Emergency</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit">Join Queue</button>
+                    </form>
+                    <div id="queueMessage"></div>
+                </div>
+            </div>
+
+            <!-- Queue Status Card -->
+            <div class="card" id="status">
+                <div class="card-header">
+                    <i class="fas fa-clock"></i>
+                    <h5>Queue Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="status-box">
+                        <div class="status-label">Your Position</div>
+                        <div class="status-value" id="position">-</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                        <div style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px;">Estimated Wait Time</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #2c3e50;" id="wait">-</div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card" id="doctors">
-                    <div class="card-body">
-                        <h5 class="card-title">Available Doctors</h5>
-                        <ul id="doctorList" class="list-group"></ul>
-                    </div>
+
+            <!-- Available Doctors Card -->
+            <div class="card" id="doctors">
+                <div class="card-header">
+                    <i class="fas fa-stethoscope"></i>
+                    <h5>Available Doctors</h5>
+                </div>
+                <div class="card-body">
+                    <div id="doctorList"></div>
                 </div>
             </div>
         </div>
@@ -80,20 +141,43 @@
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user'));
 
+        if (!user) window.location.href = 'index.html';
+
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
         function logout() {
             localStorage.clear();
             window.location.href = 'index.html';
         }
 
         async function loadDoctors() {
-            const res = await fetch('/doctors');
-            const doctors = await res.json();
-            const selects = ['doctorSelect', 'queueDoctorSelect'];
-            selects.forEach(id => {
-                const select = document.getElementById(id);
-                select.innerHTML = doctors.map(d => `<option value="${d.id}">${d.name} - ${d.specialty}</option>`).join('');
-            });
-            document.getElementById('doctorList').innerHTML = doctors.map(d => `<li class="list-group-item">${d.name} - ${d.specialty}</li>`).join('');
+            try {
+                const res = await fetch('/doctors');
+                const doctors = await res.json();
+                const selects = ['doctorSelect', 'queueDoctorSelect'];
+                selects.forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">Select a doctor...</option>' + 
+                        doctors.map(d => `<option value="${d.id}">${d.name} - ${d.specialty}</option>`).join('');
+                });
+                document.getElementById('doctorList').innerHTML = doctors.map(d => `
+                    <div class="doctor-card">
+                        <div>
+                            <h6><i class="fas fa-user-md"></i> ${d.name}</h6>
+                            <p class="doctor-specialty">${d.specialty}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading doctors:', err);
+            }
         }
 
         document.getElementById('bookForm').addEventListener('submit', async (e) => {
@@ -108,7 +192,13 @@
                 body: JSON.stringify(data)
             });
             const result = await res.json();
-            alert(result.message || result.error);
+            const msg = document.getElementById('bookMessage');
+            if (res.ok) {
+                msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + '</div>';
+                document.getElementById('bookForm').reset();
+            } else {
+                msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Booking failed') + '</div>';
+            }
         });
 
         document.getElementById('queueForm').addEventListener('submit', async (e) => {
@@ -123,17 +213,27 @@
                 body: JSON.stringify(data)
             });
             const result = await res.json();
-            alert(result.message || result.error);
-            if (result.token) alert(`Your token: ${result.token}`);
+            const msg = document.getElementById('queueMessage');
+            if (res.ok) {
+                msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + (result.token ? ` - Token: <strong>${result.token}</strong>` : '') + '</div>';
+                document.getElementById('queueForm').reset();
+            } else {
+                msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Failed to join queue') + '</div>';
+            }
         });
 
         async function updateStatus() {
-            const res = await fetch('/queue-status', { headers: { 'Authorization': `Bearer ${token}` } });
-            const status = await res.json();
-            document.getElementById('position').textContent = status.position || 'Not in queue';
-            document.getElementById('wait').textContent = status.waitTime ? `${status.waitTime} min` : '-';
+            try {
+                const res = await fetch('/queue-status', { headers: { 'Authorization': `Bearer ${token}` } });
+                const status = await res.json();
+                document.getElementById('position').textContent = status.position || 'Not in queue';
+                document.getElementById('wait').textContent = status.waitTime ? `${status.waitTime} min` : 'N/A';
+            } catch (err) {
+                console.error('Error updating status:', err);
+            }
         }
 
+        updateTime();
         loadDoctors();
         updateStatus();
         setInterval(updateStatus, 5000);
