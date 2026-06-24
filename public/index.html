@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediQueue - Smart Healthcare Queue Management</title>
+    <title>MediCare - Smart Healthcare Queue Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -13,7 +14,8 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="#home">
-                <i class="fas fa-hospital-user"></i> MediCare
+                <img src="img/logo.png" alt="MediCare logo" class="site-logo">
+                <span>MediCare</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -38,9 +40,15 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
+        <div class="hero-bg-slider">
+            <div class="slide slide-1"></div>
+            <div class="slide slide-2"></div>
+            <div class="slide slide-3"></div>
+        </div>
+        <div class="hero-overlay"></div>
         <div class="container hero-content">
             <div class="row align-items-center">
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
                     <h1>Revolutionize Healthcare Queue Management</h1>
                     <p>Reduce wait times, improve patient experience, and streamline clinic operations with intelligent queue management.</p>
                     <div class="hero-buttons">
@@ -48,8 +56,10 @@
                         <button type="button" class="btn-hero btn-hero-secondary" onclick="scrollToFeatures()">Learn More</button>
                     </div>
                 </div>
-                <div class="col-lg-6 hero-image">
-                    <i class="fas fa-users"></i>
+                <div class="col-lg-6 hero-image" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                    <div class="hero-3d-card">
+                        <img src="img/hero-medical.png" alt="Medical Illustration" class="img-fluid floating-3d-img">
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,12 +68,12 @@
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="container">
-            <div class="section-title">
-                <h2>Why Choose MediQueue?</h2>
+            <div class="section-title" data-aos="fade-up">
+                <h2>Why Choose MediCare?</h2>
                 <p>Experience the future of healthcare queue management with cutting-edge features</p>
             </div>
             <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-clock"></i>
@@ -72,7 +82,7 @@
                         <p>Monitor queue status in real-time with live updates and accurate wait time estimates.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-calendar-check"></i>
@@ -81,7 +91,7 @@
                         <p>Book appointments instantly with intelligent scheduling and automatic optimization.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-heartbeat"></i>
@@ -90,7 +100,7 @@
                         <p>Automatically prioritize emergency cases and critical patients for faster service.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-tachometer-alt"></i>
@@ -106,12 +116,12 @@
     <!-- Dashboards Section -->
     <section class="dashboards" id="dashboards">
         <div class="container">
-            <div class="section-title">
+            <div class="section-title" data-aos="fade-up">
                 <h2>Tailored Dashboards for Everyone</h2>
                 <p>Specialized interfaces for patients, doctors, and administrators</p>
             </div>
             <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="dashboard-item">
                         <div class="dashboard-icon">
                             <i class="fas fa-user"></i>
@@ -121,7 +131,7 @@
                         <button type="button" class="btn-dashboard" onclick="goToAuth('signup', 'patient')">Explore Patient</button>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="dashboard-item">
                         <div class="dashboard-icon">
                             <i class="fas fa-stethoscope"></i>
@@ -131,7 +141,7 @@
                         <button type="button" class="btn-dashboard" onclick="goToAuth('signup', 'doctor')">Explore Doctor</button>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="dashboard-item">
                         <div class="dashboard-icon">
                             <i class="fas fa-user-tie"></i>
@@ -168,11 +178,13 @@
     <!-- CTA Section -->
     <section class="cta" id="about">
         <div class="container">
-            <h2>Ready to Transform Your Clinic?</h2>
-            <p>Join thousands of healthcare facilities improving patient care with MediQueue</p>
-            <div class="cta-buttons">
-                <button type="button" class="btn-hero btn-hero-primary" onclick="goToAuth('signup')">Start Free Trial</button>
-                <button type="button" class="btn-hero btn-hero-secondary" onclick="goToAuth('login')">Sign In</button>
+            <div class="cta-box" data-aos="zoom-in">
+                <h2>Ready to Transform Your Clinic?</h2>
+                <p>Join thousands of healthcare facilities improving patient care with MediCare</p>
+                <div class="cta-buttons">
+                    <button type="button" class="btn-hero btn-hero-primary" onclick="goToAuth('signup')">Start Free Trial</button>
+                    <button type="button" class="btn-hero btn-hero-secondary" onclick="goToAuth('login')">Sign In</button>
+                </div>
             </div>
         </div>
     </section>
@@ -180,12 +192,15 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 MediQueue. All rights reserved. | Transforming Healthcare, One Queue at a Time</p>
+            <p>&copy; 2026 MediCare. All rights reserved. | Transforming Healthcare, One Queue at a Time</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        AOS.init({ once: true });
+        
         function goToAuth(type, role = null) {
             try {
                 let url = '/auth.html?type=' + type;

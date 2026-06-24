@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - MediCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/patient.css" rel="stylesheet"> <!-- Reusing existing CSS -->
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <img src="img/logo.png" alt="MediCare logo" class="sidebar-logo">
+            <span>MediCare</span>
+        </div>
+        <nav>
+            <a href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+            <a href="profile.html" class="active">
+                <i class="fas fa-user"></i>
+                <span>My Profile</span>
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+        <div class="user-profile">
+            <div class="user-profile-info">
+                <div class="user-avatar" id="userInitial">U</div>
+                <div>
+                    <div class="user-name" id="userName">User</div>
+                    <div class="user-role" id="userRole">Role</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="header">
+            <div>
+                <h1>My Profile</h1>
+                <div class="time" id="currentTime"></div>
+            </div>
+        </div>
+
+        <div class="grid-container" style="display: block;">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div class="card-header">
+                    <i class="fas fa-user-circle"></i>
+                    <h5>Profile Details</h5>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address (Read Only)</label>
+                            <input type="email" id="email" class="form-control" readonly style="background-color: rgba(0,0,0,0.3); cursor: not-allowed; color: var(--text-muted);">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" id="phone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        
+                        <!-- Doctor Specific Fields -->
+                        <div id="doctorFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="specialty">Medical Specialty</label>
+                                <input type="text" id="specialty" class="form-control" placeholder="e.g. Cardiologist, General Physician">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Changes</button>
+                    </form>
+                    <div id="profileMessage" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) window.location.href = 'index.html';
+
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+        document.getElementById('userRole').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+
+        if (user.role === 'doctor') {
+            document.getElementById('doctorFields').style.display = 'block';
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        async function logout() {
+            try {
+                await fetch('/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch('/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('phone').value = data.phone || '';
+                    if (user.role === 'doctor') {
+                        document.getElementById('specialty').value = data.specialty || '';
+                    }
+                } else {
+                    document.getElementById('profileMessage').innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> ${data.error || 'Failed to load profile'}</div>`;
+                }
+            } catch (err) {
+                console.error('Error loading profile:', err);
+            }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value
+            };
+            
+            if (user.role === 'doctor') {
+                payload.specialty = document.getElementById('specialty').value;
+            }
+
+            try {
+                const res = await fetch('/profile', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                
+                const msg = document.getElementById('profileMessage');
+                if (res.ok) {
+                    msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + '</div>';
+                    // Update user name in local storage
+                    user.name = payload.name;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+                } else {
+                    msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Failed to update profile') + '</div>';
+                }
+            } catch (err) {
+                document.getElementById('profileMessage').innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Connection error</div>';
+            }
+        });
+
+        updateTime();
+        loadProfile();
+        setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>

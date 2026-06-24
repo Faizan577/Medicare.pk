@@ -3,204 +3,961 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - MediQueue</title>
+    <title>Admin Panel - MediCare</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-        <link href="css/admin.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; margin: 0; }
 
-    <link href="css/admin.css" rel="stylesheet">
+        /* ---- Sidebar ---- */
+        .sidebar { width: 260px; min-height: 100vh; background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); position: fixed; top: 0; left: 0; z-index: 100; display: flex; flex-direction: column; box-shadow: 4px 0 24px rgba(30,27,75,0.35); }
+        .sidebar-brand { padding: 28px 24px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-brand i { font-size: 1.8rem; color: #a5b4fc; }
+        .sidebar-logo { height: 36px; width: auto; display: block; }
+        .sidebar-brand span { font-size: 1.4rem; font-weight: 800; color: white; }
+        .sidebar-brand .role-tag { font-size: 0.65rem; background: rgba(165,180,252,0.2); color: #a5b4fc; padding: 2px 8px; border-radius: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-left: 4px; }
+        .sidebar nav { padding: 16px 12px; flex: 1; }
+        .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 500; font-size: 0.9rem; margin-bottom: 4px; transition: all 0.2s; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.12); color: white; }
+        .sidebar nav a i { width: 20px; text-align: center; }
+        .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .user-avatar-sm { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 1rem; flex-shrink: 0; }
 
-    <link href="css/admin.css" rel="stylesheet">
-    <link href="css/admin.css" rel="stylesheet">
+        /* ---- Main Content ---- */
+        .main-content { margin-left: 260px; min-height: 100vh; }
+        .top-bar { background: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        .page-content { padding: 28px 32px; }
 
+        /* ---- Stats Grid ---- */
+        .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: white; border-radius: 16px; padding: 18px 20px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; color: #1e293b; line-height: 1; }
+        .stat-label { font-size: 0.72rem; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+
+        /* ---- Section Cards ---- */
+        .section-card { background: white; border-radius: 18px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px; overflow: hidden; }
+        .section-header { padding: 18px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+        .section-header h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+
+        /* ---- Table ---- */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px; border-bottom: 2px solid #f1f5f9; background: #f8fafc; }
+        .data-table td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: 0.87rem; color: #334155; vertical-align: middle; }
+        .data-table tr:hover td { background: #fafbfc; }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        /* ---- Status Badges ---- */
+        .badge-waiting { background: #fef9c3; color: #854d0e; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-active { background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 20px; font-size: 0.72px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; animation: badge-glow 2s infinite; font-size: 0.72rem; }
+        .badge-completed { background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-scheduled { background: #ede9fe; color: #5b21b6; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-approved { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-cancelled { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-rescheduled { background: #fff7ed; color: #c2410c; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-called { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; animation: badge-called-glow 1.5s infinite; }
+        @keyframes badge-called-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(234,179,8,0.4); } 50% { box-shadow: 0 0 0 5px rgba(234,179,8,0); } }
+        .badge-late { background: #fff1f0; color: #cf1322; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #ffa39e; }
+        @keyframes badge-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.3); } 50% { box-shadow: 0 0 0 5px rgba(16,185,129,0); } }
+        .grace-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: #fef3c7; border: 1.5px solid #fcd34d; border-radius: 20px; font-size: 0.72rem; font-weight: 700; color: #92400e; margin-top: 4px; }
+        .grace-chip.urgent { background: #fee2e2; border-color: #fca5a5; color: #991b1b; animation: badge-called-glow 0.8s infinite; }
+
+        /* ---- Token Number ---- */
+        .token-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: linear-gradient(135deg, #1e1b4b, #312e81); color: white; border-radius: 9px; font-weight: 700; font-size: 0.9rem; }
+        .emergency-badge { background: #fee2e2; color: #dc2626; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 5px; }
+
+        /* ---- Action Buttons ---- */
+        .btn-call { background: #312e81; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-call:hover { background: #1e1b4b; transform: translateY(-1px); }
+        .btn-skip { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-skip:hover { background: #ffedd5; }
+        .btn-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-done:hover { background: #dcfce7; }
+        .btn-approve { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-reschedule { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-cancel { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-edit { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-primary-sm { background: #312e81; color: white; border: none; padding: 8px 18px; border-radius: 9px; font-size: 0.83rem; font-weight: 700; cursor: pointer; }
+
+        /* ---- Live Queue Board ---- */
+        .queue-board { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 18px; padding: 24px; margin-bottom: 24px; color: white; }
+        .board-stat { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; text-align: center; flex: 1; }
+        .board-stat .num { font-size: 2rem; font-weight: 800; }
+        .board-stat .lbl { font-size: 0.72rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .live-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: #34d399; }
+        .live-dot { width: 8px; height: 8px; background: #34d399; border-radius: 50%; animation: live-pulse 1.5s infinite; }
+        @keyframes live-pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:0.4;transform:scale(0.7); } }
+
+        /* ---- Modal ---- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: white; border-radius: 20px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid #f1f5f9; display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-close { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; color: #64748b; display: flex; align-items: center; justify-content: center; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { font-size: 0.82rem; font-weight: 600; color: #475569; margin-bottom: 5px; display: block; }
+        .form-input { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; width: 100%; }
+        .form-input:focus { outline: none; border-color: #312e81; box-shadow: 0 0 0 3px rgba(49,46,129,0.1); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* ---- Toast ---- */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast-msg { background: #1e293b; color: white; padding: 14px 20px; border-radius: 12px; margin-bottom: 10px; font-weight: 500; font-size: 0.88rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; }
+        .toast-success { border-left: 4px solid #10b981; }
+        .toast-error { border-left: 4px solid #ef4444; }
+        .toast-info { border-left: 4px solid #3b82f6; }
+        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* ---- Empty State ---- */
+        .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+        .empty-state p { font-size: 0.88rem; margin: 0; }
+
+        /* ---- Doctor Card ---- */
+        .doctor-card { border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #fafbfc; }
+        .doc-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #312e81, #1e1b4b); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+        .specialty-tag { background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    </style>
+</head>
 <body>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fas fa-hospital"></i>
-            <span>MediQueue</span>
+            <img src="img/logo.png" alt="MediCare logo" class="sidebar-logo">
+            <div>
+                <span>MediCare</span>
+                <span class="role-tag">Admin</span>
+            </div>
         </div>
         <nav>
-            <a href="#stats" class="active">
-                <i class="fas fa-chart-bar"></i>
-                <span>Statistics</span>
+            <a href="#" onclick="showSection('dashboard')" class="active" id="nav-dashboard">
+                <i class="fas fa-chart-bar"></i><span>Dashboard</span>
             </a>
-            <a href="#doctors">
-                <i class="fas fa-user-md"></i>
-                <span>Manage Doctors</span>
+            <a href="#" onclick="showSection('queue')" id="nav-queue">
+                <i class="fas fa-list-ol"></i><span>Token Queue</span>
+            </a>
+            <a href="#" onclick="showSection('appointments')" id="nav-appointments">
+                <i class="fas fa-calendar-alt"></i><span>Appointments</span>
+            </a>
+            <a href="#" onclick="showSection('doctors')" id="nav-doctors">
+                <i class="fas fa-user-md"></i><span>Manage Doctors</span>
+            </a>
+            <a href="#" onclick="showSection('add-doctor')" id="nav-add-doctor">
+                <i class="fas fa-user-plus"></i><span>Add Doctor</span>
             </a>
             <a href="#" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
+                <i class="fas fa-sign-out-alt"></i><span>Logout</span>
             </a>
         </nav>
-        <div class="user-profile">
-            <div class="user-profile-info">
-                <div class="user-avatar" id="userInitial">A</div>
+        <div class="sidebar-footer">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="user-avatar-sm" id="userInitial">A</div>
                 <div>
-                    <div class="user-name" id="userName">Admin</div>
-                    <div class="user-role">Administrator</div>
+                    <div style="color:white;font-weight:700;font-size:0.9rem;" id="userName">Admin</div>
+                    <div style="color:rgba(255,255,255,0.5);font-size:0.72rem;">Administrator</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="content">
-        <div class="header">
-            <h1>Administration Dashboard</h1>
-        </div>
-
-        <!-- Statistics -->
-        <div class="stats-grid" id="stats">
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <div class="stat-label">Total Patients</div>
-                <div class="stat-value" id="totalPatients">0</div>
+    <div class="main-content">
+        <div class="top-bar">
+            <div>
+                <h4 style="margin:0;font-weight:700;color:#1e293b;font-size:1.1rem;" id="pageTitle">Administration Dashboard</h4>
+                <div style="font-size:0.78rem;color:#64748b;" id="todayDate"></div>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-calendar-alt"></i>
-                <div class="stat-label">Total Appointments</div>
-                <div class="stat-value" id="totalAppointments">0</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-stethoscope"></i>
-                <div class="stat-label">Total Doctors</div>
-                <div class="stat-value" id="totalDoctors">0</div>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div class="live-indicator"><span class="live-dot"></span>Real-time</div>
+                <div style="background:#f1f5f9;padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:600;color:#475569;" id="clockDisplay"></div>
             </div>
         </div>
 
-        <!-- Main Grid -->
-        <div class="grid-container">
-            <!-- Add Doctor Card -->
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-user-plus"></i>
-                    <h5>Add New Doctor</h5>
+        <div class="page-content">
+
+            <!-- ===== DASHBOARD SECTION ===== -->
+            <div id="section-dashboard">
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#eff6ff;color:#1d4ed8;"><i class="fas fa-users"></i></div>
+                        <div><div class="stat-value" id="statPatients">—</div><div class="stat-label">Total Patients</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#faf5ff;color:#7c3aed;"><i class="fas fa-user-md"></i></div>
+                        <div><div class="stat-value" id="statDoctors">—</div><div class="stat-label">Doctors</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#f0fdf4;color:#16a34a;"><i class="fas fa-ticket-alt"></i></div>
+                        <div><div class="stat-value" id="statActiveTokens">—</div><div class="stat-label">Active Tokens</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#fef9c3;color:#b45309;"><i class="fas fa-calendar-alt"></i></div>
+                        <div><div class="stat-value" id="statTodayAppts">—</div><div class="stat-label">Today's Appts</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#fff7ed;color:#c2410c;"><i class="fas fa-check-circle"></i></div>
+                        <div><div class="stat-value" id="statConsults">—</div><div class="stat-label">Today's Consults</div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:#f1f5f9;color:#475569;"><i class="fas fa-database"></i></div>
+                        <div><div class="stat-value" id="statTotalAppts">—</div><div class="stat-label">Total Appts</div></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form id="addDoctorForm">
-                        <div class="form-group">
-                            <label for="docName">Full Name</label>
-                            <input type="text" id="docName" class="form-control" placeholder="Dr. John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="docEmail">Email Address</label>
-                            <input type="email" id="docEmail" class="form-control" placeholder="doctor@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="docSpecialty">Medical Specialty</label>
-                            <input type="text" id="docSpecialty" class="form-control" placeholder="e.g., Cardiology" required>
-                        </div>
-                        <button type="submit" class="btn-submit">Add Doctor</button>
-                    </form>
-                    <div id="addDoctorMessage"></div>
+
+                <!-- Live Queue Board Widget -->
+                <div class="queue-board">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h5 style="color:white;font-weight:700;margin:0;"><i class="fas fa-tv me-2"></i>Live Queue Overview</h5>
+                        <div class="live-indicator"><span class="live-dot"></span>Live</div>
+                    </div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;" id="queueBoardStats">
+                        <div class="board-stat"><div class="num" id="boardTotal">0</div><div class="lbl">In Queue</div></div>
+                        <div class="board-stat"><div class="num" id="boardActive">0</div><div class="lbl">In Consultation</div></div>
+                        <div class="board-stat"><div class="num" id="boardWaiting">0</div><div class="lbl">Waiting</div></div>
+                        <div class="board-stat"><div class="num" id="boardDoctors">0</div><div class="lbl">Active Doctors</div></div>
+                    </div>
+                </div>
+
+                <!-- Recent Queue Table -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h5><i class="fas fa-list-ol text-primary"></i> Current Queue (All Doctors)</h5>
+                        <button onclick="showSection('queue')" style="background:#f1f5f9;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;color:#475569;">View Full Queue →</button>
+                    </div>
+                    <div>
+                        <table class="data-table" id="dashQueueTable">
+                            <thead>
+                                <tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Specialty</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="dashQueueBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <!-- Doctor List Card -->
-            <div class="card" id="doctors">
-                <div class="card-header">
-                    <i class="fas fa-stethoscope"></i>
-                    <h5>Manage Doctors</h5>
+            <!-- ===== TOKEN QUEUE SECTION ===== -->
+            <div id="section-queue" style="display:none;">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h5><i class="fas fa-list-ol" style="color:#312e81;"></i> Token Queue Management</h5>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <div class="live-indicator"><span class="live-dot"></span>Auto-refreshing</div>
+                            <button onclick="loadQueue()" style="background:#312e81;color:white;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;"><i class="fas fa-sync me-1"></i>Refresh</button>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Token</th><th>Patient</th><th>Doctor</th><th>Dept / Hospital</th><th>Position</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="queueTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="doctorList"></div>
+            </div>
+
+            <!-- ===== APPOINTMENTS SECTION ===== -->
+            <div id="section-appointments" style="display:none;">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h5><i class="fas fa-calendar-alt" style="color:#312e81;"></i> Appointment Management</h5>
+                        <div style="display:flex;gap:8px;">
+                            <select id="apptStatusFilter" class="form-input" style="width:160px;padding:6px 10px;font-size:0.82rem;" onchange="filterAppointments()">
+                                <option value="">All Status</option>
+                                <option value="scheduled">Scheduled</option>
+                                <option value="approved">Approved</option>
+                                <option value="rescheduled">Rescheduled</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <button onclick="loadAppointments()" style="background:#312e81;color:white;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;"><i class="fas fa-sync me-1"></i>Refresh</button>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Patient</th><th>Doctor</th><th>Date & Time</th><th>Hospital</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="appointmentsTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+
+            <!-- ===== DOCTORS SECTION ===== -->
+            <div id="section-doctors" style="display:none;">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h5><i class="fas fa-user-md" style="color:#312e81;"></i> Manage Doctors</h5>
+                        <input type="text" placeholder="Search doctor..." id="doctorSearch" style="border:1px solid #e2e8f0;border-radius:9px;padding:7px 14px;font-size:0.82rem;width:220px;" oninput="filterDoctors()">
+                    </div>
+                    <div style="padding:20px;" id="doctorListContainer">
+                        <div class="empty-state"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ADD DOCTOR SECTION ===== -->
+            <div id="section-add-doctor" style="display:none;">
+                <div class="section-card" style="max-width:700px;margin:0 auto;">
+                    <div class="section-header">
+                        <h5><i class="fas fa-user-plus" style="color:#312e81;"></i> Add New Doctor</h5>
+                    </div>
+                    <div style="padding:24px;">
+                        <form id="addDoctorForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" id="docName" class="form-input" placeholder="Dr. John Doe" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" id="docEmail" class="form-input" placeholder="doctor@example.com" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Medical Specialty *</label>
+                                    <input type="text" id="docSpecialty" class="form-input" placeholder="e.g., Cardiology" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Qualification</label>
+                                    <input type="text" id="docQualification" class="form-input" placeholder="e.g., MBBS, FCPS">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Experience (years)</label>
+                                    <input type="number" id="docExperience" class="form-input" placeholder="e.g., 10">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Consultation Fee (Rs.)</label>
+                                    <input type="number" id="docFee" class="form-input" placeholder="e.g., 1500">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Available Timings</label>
+                                    <input type="text" id="docTiming" class="form-input" placeholder="e.g., 09:00 AM - 01:00 PM">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hospital Name</label>
+                                    <input type="text" id="docHospital" class="form-input" placeholder="e.g., MediCare Clinic">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Hospital Address</label>
+                                <input type="text" id="docAddress" class="form-input" placeholder="e.g., 12 Main Street, Sector G-6">
+                            </div>
+                            <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:0.82rem;color:#64748b;border:1px solid #e2e8f0;">
+                                <i class="fas fa-info-circle text-primary me-2"></i>Default password will be <strong>defaultpass</strong> — doctor should change it after first login.
+                            </div>
+                            <button type="submit" class="btn-primary-sm" style="width:100%;padding:12px;">
+                                <i class="fas fa-plus me-2"></i>Add Doctor
+                            </button>
+                            <div id="addDoctorMsg" style="margin-top:12px;"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Edit Doctor Modal -->
+    <div class="modal-overlay" id="editDoctorModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h5 style="font-weight:700;color:#1e293b;margin:0;"><i class="fas fa-edit text-primary me-2"></i>Edit Doctor</h5>
+                <button class="modal-close" onclick="closeModal('editDoctorModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="editDoctorForm">
+                    <input type="hidden" id="editDoctorId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="editDocName" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Specialty</label>
+                            <input type="text" id="editDocSpecialty" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Qualification</label>
+                            <input type="text" id="editDocQualification" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Experience (years)</label>
+                            <input type="number" id="editDocExperience" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Available Timings</label>
+                            <input type="text" id="editDocTiming" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Consultation Fee (Rs.)</label>
+                            <input type="number" id="editDocFee" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hospital Name</label>
+                            <input type="text" id="editDocHospital" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hospital Address</label>
+                            <input type="text" id="editDocAddress" class="form-input">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('editDoctorModal')" style="background:#f1f5f9;border:none;padding:9px 20px;border-radius:9px;font-weight:600;cursor:pointer;color:#475569;">Cancel</button>
+                <button onclick="saveEditDoctor()" class="btn-primary-sm">Save Changes</button>
             </div>
         </div>
     </div>
+
+    <!-- Reschedule Modal -->
+    <div class="modal-overlay" id="rescheduleModal">
+        <div class="modal-box" style="max-width:420px;">
+            <div class="modal-header">
+                <h5 style="font-weight:700;color:#1e293b;margin:0;"><i class="fas fa-calendar-alt text-warning me-2"></i>Reschedule Appointment</h5>
+                <button class="modal-close" onclick="closeModal('rescheduleModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rescheduleApptId">
+                <div class="form-group">
+                    <label class="form-label">New Date & Time</label>
+                    <input type="datetime-local" id="rescheduleDateTime" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('rescheduleModal')" style="background:#f1f5f9;border:none;padding:9px 20px;border-radius:9px;font-weight:600;cursor:pointer;color:#475569;">Cancel</button>
+                <button onclick="confirmReschedule()" class="btn-primary-sm">Reschedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user'));
-
-        if (!user) window.location.href = 'index.html';
+        if (!user || user.role !== 'admin') window.location.href = 'auth.html';
 
         document.getElementById('userName').textContent = user.name;
         document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
 
+        let allQueues = [];
+        let allAppointments = [];
+        let allDoctors = [];
+
+        // ---- Clock ----
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('todayDate').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ---- Toast ----
+        function showToast(msg, type = 'info') {
+            const t = document.createElement('div');
+            t.className = `toast-msg toast-${type}`;
+            t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>${msg}`;
+            document.getElementById('toastContainer').appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
         function logout() {
+            fetch('/logout', { method: 'POST' }).catch(() => {});
             localStorage.clear();
             window.location.href = 'index.html';
         }
 
-        async function loadDashboard() {
-            try {
-                const res = await fetch('/admin-dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
-                const data = await res.json();
+        // ---- Nav ----
+        function showSection(name) {
+            ['dashboard', 'queue', 'appointments', 'doctors', 'add-doctor'].forEach(s => {
+                const el = document.getElementById(`section-${s}`);
+                if (el) el.style.display = s === name ? 'block' : 'none';
+                const nav = document.getElementById(`nav-${s}`);
+                if (nav) nav.classList.toggle('active', s === name);
+            });
+            const titles = { dashboard: 'Administration Dashboard', queue: 'Token Queue Management', appointments: 'Appointment Management', doctors: 'Manage Doctors', 'add-doctor': 'Add New Doctor' };
+            document.getElementById('pageTitle').textContent = titles[name] || name;
+            if (name === 'queue') loadQueue();
+            if (name === 'appointments') loadAppointments();
+            if (name === 'doctors') loadDoctors();
+        }
 
-                document.getElementById('totalPatients').textContent = data.totalPatients;
-                document.getElementById('totalAppointments').textContent = data.totalAppointments;
-                document.getElementById('totalDoctors').textContent = data.doctors.length;
+        // ---- Status Badge ----
+        function statusBadge(status) {
+            const map = {
+                waiting: '<span class="badge-waiting"><i class="fas fa-hourglass-half"></i> Waiting</span>',
+                active: '<span class="badge-active"><i class="fas fa-circle"></i> In Progress</span>',
+                completed: '<span class="badge-completed">Completed</span>',
+                scheduled: '<span class="badge-scheduled"><i class="fas fa-calendar"></i> Scheduled</span>',
+                approved: '<span class="badge-approved"><i class="fas fa-check"></i> Approved</span>',
+                cancelled: '<span class="badge-cancelled"><i class="fas fa-times"></i> Cancelled</span>',
+                rescheduled: '<span class="badge-rescheduled"><i class="fas fa-sync"></i> Rescheduled</span>',
+                called: '<span class="badge-called"><i class="fas fa-bell"></i> Called</span>',
+                late: '<span class="badge-late"><i class="fas fa-exclamation-triangle"></i> Missed Turn</span>'
+            };
+            return map[status] || `<span class="badge-completed">${status}</span>`;
+        }
 
-                if (data.doctors.length > 0) {
-                    document.getElementById('doctorList').innerHTML = data.doctors.map(d => `
-                        <div class="doctor-item">
-                            <div class="doctor-info">
-                                <div class="doctor-name"><i class="fas fa-user-md"></i> ${d.name}</div>
-                                <p class="doctor-specialty">${d.specialty}</p>
-                            </div>
-                            <button class="btn-danger" onclick="removeDoctor(${d.id})">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </div>
-                    `).join('');
-                } else {
-                    document.getElementById('doctorList').innerHTML = '<div class="empty-state"><i class="fas fa-user-md"></i><p>No doctors added yet</p></div>';
-                }
-            } catch (err) {
-                console.error('Error loading dashboard:', err);
+        // ---- Admin-side Grace Period Countdown ----
+        const adminGraceTimers = {}; // { tokenId: intervalHandle }
+        const GRACE_MS = 5 * 60 * 1000;
+
+        function startAdminGraceDisplay(tokenId, calledAt) {
+            stopAdminGraceDisplay(tokenId);
+            const chipId = `grace-chip-${tokenId}`;
+            function tick() {
+                const chip = document.getElementById(chipId);
+                if (!chip) { stopAdminGraceDisplay(tokenId); return; }
+                const elapsed = Date.now() - new Date(calledAt).getTime();
+                const remaining = Math.max(0, Math.floor((GRACE_MS - elapsed) / 1000));
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                chip.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')} remaining`;
+                if (remaining <= 60) chip.className = 'grace-chip urgent';
+                else chip.className = 'grace-chip';
+                if (remaining === 0) stopAdminGraceDisplay(tokenId);
+            }
+            tick();
+            adminGraceTimers[tokenId] = setInterval(tick, 1000);
+        }
+
+        function stopAdminGraceDisplay(tokenId) {
+            if (adminGraceTimers[tokenId]) {
+                clearInterval(adminGraceTimers[tokenId]);
+                delete adminGraceTimers[tokenId];
             }
         }
 
+        function clearAllGraceDisplays() {
+            Object.keys(adminGraceTimers).forEach(stopAdminGraceDisplay);
+        }
+
+        // ======================== DASHBOARD ========================
+        async function loadStats() {
+            try {
+                const res = await fetch('/admin-stats', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                document.getElementById('statPatients').textContent = data.totalPatients;
+                document.getElementById('statDoctors').textContent = data.totalDoctors;
+                document.getElementById('statActiveTokens').textContent = data.activeTokens;
+                document.getElementById('statTodayAppts').textContent = data.todayAppointments;
+                document.getElementById('statConsults').textContent = data.todayConsultations;
+                document.getElementById('statTotalAppts').textContent = data.totalAppointments;
+            } catch (err) {}
+        }
+
+        async function loadDashboardQueue() {
+            try {
+                const res = await fetch('/admin-queue', { headers: { 'Authorization': `Bearer ${token}` } });
+                allQueues = await res.json();
+                renderDashboardQueue();
+            } catch (err) {}
+        }
+
+        function renderDashboardQueue() {
+            const tbody = document.getElementById('dashQueueBody');
+            const doctors = [...new Set(allQueues.map(q => q.doctor_id))];
+
+            // Board stats
+            document.getElementById('boardTotal').textContent = allQueues.length;
+            document.getElementById('boardActive').textContent = allQueues.filter(q => q.queue_status === 'active').length;
+            document.getElementById('boardWaiting').textContent = allQueues.filter(q => q.queue_status === 'waiting').length;
+            document.getElementById('boardDoctors').textContent = doctors.length;
+
+            if (!allQueues.length) {
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-check-double"></i><p>All queues are clear</p></div></td></tr>`;
+                return;
+            }
+
+            clearAllGraceDisplays();
+            tbody.innerHTML = allQueues.slice(0, 8).map(q => `
+                <tr>
+                    <td><span class="token-num">${q.token_number}</span></td>
+                    <td><strong>${q.patient_name}</strong>${q.patient_phone ? `<br><small style="color:#94a3b8;">${q.patient_phone}</small>` : ''}</td>
+                    <td>${q.doctor_name}</td>
+                    <td><span style="font-size:0.78rem;color:#64748b;">${q.specialty}</span></td>
+                    <td>
+                        ${statusBadge(q.queue_status)}
+                        ${q.queue_status === 'called' && q.called_at ? `<br><span id="grace-chip-${q.token_id}" class="grace-chip">⏱ Loading...</span>` : ''}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            ${q.queue_status === 'waiting' ? `<button class="btn-call" onclick="callNext(${q.token_id})"><i class="fas fa-phone"></i> Call</button>` : ''}
+                            ${q.queue_status === 'waiting' ? `<button class="btn-skip" onclick="skipToken(${q.token_id})">Skip</button>` : ''}
+                            ${q.queue_status === 'called' ? `
+                                <button class="btn-done" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;" onclick="adminMarkPresent(${q.token_id})"><i class="fas fa-check"></i> Present</button>
+                                <button class="btn-cancel" style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;" onclick="adminMarkLate(${q.token_id})"><i class="fas fa-times"></i> Late</button>
+                            ` : ''}
+                            ${q.queue_status === 'late' ? `<button class="btn-call" style="background:#059669;" onclick="adminRejoinArrived(${q.token_id})"><i class="fas fa-walking"></i> Arrived</button>` : ''}
+                            <button class="btn-done" onclick="completeToken(${q.token_id})">Done</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            // Start grace countdowns for called tokens
+            allQueues.slice(0, 8).forEach(q => {
+                if (q.queue_status === 'called' && q.called_at) startAdminGraceDisplay(q.token_id, q.called_at);
+            });
+        }
+
+        // ======================== QUEUE ========================
+        async function loadQueue() {
+            try {
+                const res = await fetch('/admin-queue', { headers: { 'Authorization': `Bearer ${token}` } });
+                allQueues = await res.json();
+                renderQueueTable();
+            } catch (err) { showToast('Failed to load queue', 'error'); }
+        }
+
+        function renderQueueTable() {
+            const tbody = document.getElementById('queueTableBody');
+            if (!allQueues.length) {
+                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-list-ol"></i><p>No active tokens in queue</p></div></td></tr>`;
+                return;
+            }
+
+            clearAllGraceDisplays();
+            tbody.innerHTML = allQueues.map(q => `
+                <tr>
+                    <td><span class="token-num">${q.token_number}</span>${q.emergency ? '<span class="emergency-badge">🚨 EMG</span>' : ''}</td>
+                    <td><strong>${q.patient_name}</strong>${q.patient_phone ? `<br><small style="color:#94a3b8;">${q.patient_phone}</small>` : ''}</td>
+                    <td>${q.doctor_name}</td>
+                    <td><span style="font-size:0.78rem;">${q.specialty}</span><br><small style="color:#94a3b8;font-size:0.72rem;">${q.hospital_name || ''}</small></td>
+                    <td>${q.queue_status === 'active' || q.queue_status === 'called' ? '—' : `#${q.position}`}</td>
+                    <td>
+                        ${statusBadge(q.queue_status)}
+                        ${q.queue_status === 'called' && q.called_at ? `<br><span id="grace-chip-${q.token_id}" class="grace-chip">⏱ Loading...</span>` : ''}
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            ${q.queue_status === 'waiting' ? `<button class="btn-call" onclick="callNext(${q.token_id})"><i class="fas fa-phone"></i> Call</button>` : ''}
+                            ${q.queue_status === 'waiting' ? `<button class="btn-skip" onclick="skipToken(${q.token_id})">Skip</button>` : ''}
+                            ${q.queue_status === 'called' ? `
+                                <button class="btn-done" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;" onclick="adminMarkPresent(${q.token_id})"><i class="fas fa-check"></i> Present</button>
+                                <button class="btn-cancel" style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;" onclick="adminMarkLate(${q.token_id})"><i class="fas fa-times"></i> Late</button>
+                            ` : ''}
+                            ${q.queue_status === 'late' ? `<button class="btn-call" style="background:#059669;padding:6px 12px;" onclick="adminRejoinArrived(${q.token_id})"><i class="fas fa-walking"></i> Arrived</button>` : ''}
+                            <button class="btn-done" onclick="completeToken(${q.token_id})">Done</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            // Start grace countdowns for all called tokens
+            allQueues.forEach(q => {
+                if (q.queue_status === 'called' && q.called_at) startAdminGraceDisplay(q.token_id, q.called_at);
+            });
+        }
+
+        async function callNext(tokenId) {
+            try {
+                const res = await fetch('/admin/call-next', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ tokenId })
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('🔔 Patient called! 5-minute grace period started.', 'success');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error calling patient', 'error'); }
+        }
+
+        async function skipToken(tokenId) {
+            try {
+                const res = await fetch(`/admin/skip-token/${tokenId}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                showToast('Token skipped', 'info');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error', 'error'); }
+        }
+
+        async function completeToken(tokenId) {
+            if (!confirm('Mark this token as completed?')) return;
+            try {
+                const res = await fetch(`/admin/complete-token/${tokenId}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+                showToast('Token completed', 'success');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error', 'error'); }
+        }
+
+        async function adminMarkPresent(tokenId) {
+            try {
+                const res = await fetch(`/mark-patient-present/${tokenId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error || 'Failed to mark present', 'error'); return; }
+                stopAdminGraceDisplay(tokenId);
+                showToast('✅ Patient marked as present — Ready for consultation!', 'success');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error marking patient present', 'error'); }
+        }
+
+        async function adminMarkLate(tokenId) {
+            if (!confirm('Mark this patient as late? They will be moved to the end of the queue.')) return;
+            try {
+                const res = await fetch(`/mark-patient-late/${tokenId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error || 'Failed to mark late', 'error'); return; }
+                stopAdminGraceDisplay(tokenId);
+                showToast('⚠️ Patient marked as late — moved to end of queue.', 'info');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error marking patient late', 'error'); }
+        }
+
+        async function adminRejoinArrived(tokenId) {
+            if (!confirm('Confirm patient has physically arrived? They will be added back to the waiting queue.')) return;
+            try {
+                const res = await fetch(`/admin/rejoin-arrived/${tokenId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error || 'Failed to rejoin patient', 'error'); return; }
+                showToast('✅ Patient rejoined queue! They are now waiting.', 'success');
+                await loadDashboardQueue();
+                if (document.getElementById('section-queue').style.display !== 'none') await loadQueue();
+            } catch (err) { showToast('Error rejoining patient', 'error'); }
+        }
+
+        // ======================== APPOINTMENTS ========================
+        async function loadAppointments() {
+            try {
+                const res = await fetch('/admin-appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                allAppointments = await res.json();
+                filterAppointments();
+            } catch (err) { showToast('Failed to load appointments', 'error'); }
+        }
+
+        function filterAppointments() {
+            const filter = document.getElementById('apptStatusFilter').value;
+            const filtered = filter ? allAppointments.filter(a => a.status === filter) : allAppointments;
+            renderAppointmentsTable(filtered);
+        }
+
+        function renderAppointmentsTable(appts) {
+            const tbody = document.getElementById('appointmentsTableBody');
+            if (!appts.length) {
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-calendar-alt"></i><p>No appointments found</p></div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = appts.map(a => `
+                <tr>
+                    <td><strong>${a.patient_name}</strong>${a.patient_phone ? `<br><small style="color:#94a3b8;">${a.patient_phone}</small>` : ''}</td>
+                    <td>${a.doctor_name}<br><small style="color:#94a3b8;">${a.specialty}</small></td>
+                    <td>${new Date(a.appointment_date).toLocaleString()}</td>
+                    <td style="font-size:0.78rem;color:#64748b;">${a.hospital_name || '—'}</td>
+                    <td>${statusBadge(a.status)}</td>
+                    <td>
+                        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                            ${(a.status === 'scheduled') ? `<button class="btn-approve" onclick="approveAppt(${a.appointment_id})"><i class="fas fa-check"></i> Approve</button>` : ''}
+                            ${(a.status !== 'completed' && a.status !== 'cancelled') ? `<button class="btn-reschedule" onclick="openReschedule(${a.appointment_id})"><i class="fas fa-calendar"></i></button>` : ''}
+                            ${(a.status !== 'completed' && a.status !== 'cancelled') ? `<button class="btn-cancel" onclick="cancelAppt(${a.appointment_id})"><i class="fas fa-times"></i></button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function approveAppt(id) {
+            const res = await fetch(`/admin/appointments/${id}/approve`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
+            showToast('Appointment approved', 'success');
+            loadAppointments();
+        }
+
+        function openReschedule(id) {
+            document.getElementById('rescheduleApptId').value = id;
+            document.getElementById('rescheduleModal').classList.add('show');
+        }
+
+        async function confirmReschedule() {
+            const id = document.getElementById('rescheduleApptId').value;
+            const dt = document.getElementById('rescheduleDateTime').value;
+            if (!dt) { showToast('Please select a date', 'error'); return; }
+            const res = await fetch(`/admin/appointments/${id}/reschedule`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ newDateTime: dt })
+            });
+            showToast('Appointment rescheduled', 'success');
+            closeModal('rescheduleModal');
+            loadAppointments();
+        }
+
+        async function cancelAppt(id) {
+            if (!confirm('Cancel this appointment?')) return;
+            const res = await fetch(`/admin/appointments/${id}/cancel`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
+            showToast('Appointment cancelled', 'info');
+            loadAppointments();
+        }
+
+        // ======================== DOCTORS ========================
+        async function loadDoctors() {
+            try {
+                const res = await fetch('/admin-doctors', { headers: { 'Authorization': `Bearer ${token}` } });
+                allDoctors = await res.json();
+                filterDoctors();
+            } catch (err) { showToast('Failed to load doctors', 'error'); }
+        }
+
+        function filterDoctors() {
+            const q = (document.getElementById('doctorSearch').value || '').toLowerCase();
+            const filtered = q ? allDoctors.filter(d => d.name.toLowerCase().includes(q) || (d.specialty || '').toLowerCase().includes(q)) : allDoctors;
+            renderDoctors(filtered);
+        }
+
+        function renderDoctors(doctors) {
+            const el = document.getElementById('doctorListContainer');
+            if (!doctors.length) {
+                el.innerHTML = '<div class="empty-state"><i class="fas fa-user-md"></i><p>No doctors found</p></div>';
+                return;
+            }
+            el.innerHTML = doctors.map(d => `
+                <div class="doctor-card">
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        <div class="doc-avatar">${d.name.charAt(0)}</div>
+                        <div>
+                            <div style="font-weight:700;color:#1e293b;">${d.name}</div>
+                            <div style="margin-top:3px;"><span class="specialty-tag">${d.specialty || 'General'}</span></div>
+                            <div style="font-size:0.78rem;color:#94a3b8;margin-top:4px;">${d.hospital_name || ''} ${d.available_timing ? '· ' + d.available_timing : ''}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-edit" onclick="openEditDoctor(${d.id})"><i class="fas fa-edit me-1"></i>Edit</button>
+                        <button class="btn-delete" onclick="removeDoctor(${d.id})"><i class="fas fa-trash me-1"></i>Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function openEditDoctor(id) {
+            try {
+                const res = await fetch(`/admin/doctors/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const d = await res.json();
+                document.getElementById('editDoctorId').value = id;
+                document.getElementById('editDocName').value = d.name;
+                document.getElementById('editDocSpecialty').value = d.specialty || '';
+                document.getElementById('editDocQualification').value = d.qualification || '';
+                document.getElementById('editDocExperience').value = d.experience_years || '';
+                document.getElementById('editDocTiming').value = d.available_timing || '';
+                document.getElementById('editDocFee').value = d.consultation_fee || '';
+                document.getElementById('editDocHospital').value = d.hospital_name || '';
+                document.getElementById('editDocAddress').value = d.hospital_address || '';
+                document.getElementById('editDoctorModal').classList.add('show');
+            } catch (err) { showToast('Failed to load doctor', 'error'); }
+        }
+
+        async function saveEditDoctor() {
+            const id = document.getElementById('editDoctorId').value;
+            const body = {
+                name: document.getElementById('editDocName').value,
+                specialty: document.getElementById('editDocSpecialty').value,
+                qualification: document.getElementById('editDocQualification').value,
+                experience_years: document.getElementById('editDocExperience').value,
+                available_timing: document.getElementById('editDocTiming').value,
+                consultation_fee: document.getElementById('editDocFee').value,
+                hospital_name: document.getElementById('editDocHospital').value,
+                hospital_address: document.getElementById('editDocAddress').value
+            };
+            try {
+                const res = await fetch(`/admin/doctors/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(body)
+                });
+                showToast('Doctor updated successfully', 'success');
+                closeModal('editDoctorModal');
+                loadDoctors();
+            } catch (err) { showToast('Error', 'error'); }
+        }
+
+        async function removeDoctor(id) {
+            if (!confirm('Are you sure you want to remove this doctor? This action cannot be undone.')) return;
+            try {
+                const res = await fetch(`/remove-doctor/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                showToast('Doctor removed', 'info');
+                loadDoctors();
+                loadStats();
+            } catch (err) { showToast('Error', 'error'); }
+        }
+
+        // ======================== ADD DOCTOR ========================
         document.getElementById('addDoctorForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const data = {
+            const body = {
                 name: document.getElementById('docName').value,
                 email: document.getElementById('docEmail').value,
                 specialty: document.getElementById('docSpecialty').value
             };
-
             try {
                 const res = await fetch('/add-doctor', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(body)
                 });
-                const result = await res.json();
-                const msg = document.getElementById('addDoctorMessage');
-
+                const data = await res.json();
+                const msg = document.getElementById('addDoctorMsg');
                 if (res.ok) {
-                    msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + '</div>';
+                    msg.innerHTML = `<div style="background:#d1fae5;color:#065f46;padding:12px;border-radius:10px;font-weight:600;font-size:0.88rem;"><i class="fas fa-check-circle me-2"></i>${data.message}</div>`;
                     document.getElementById('addDoctorForm').reset();
-                    loadDashboard();
+                    showToast('Doctor added successfully!', 'success');
+                    loadStats();
                 } else {
-                    msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Failed to add doctor') + '</div>';
+                    msg.innerHTML = `<div style="background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;font-weight:600;font-size:0.88rem;"><i class="fas fa-exclamation-circle me-2"></i>${data.error || 'Failed'}</div>`;
                 }
             } catch (err) {
-                document.getElementById('addDoctorMessage').innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Network error</div>';
+                document.getElementById('addDoctorMsg').innerHTML = `<div style="background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;font-size:0.88rem;">Network error</div>`;
             }
         });
 
-        async function removeDoctor(doctorId) {
-            if (confirm('Are you sure you want to remove this doctor?')) {
-                try {
-                    const res = await fetch(`/remove-doctor/${doctorId}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const result = await res.json();
-                    loadDashboard();
-                } catch (err) {
-                    alert('Error removing doctor');
-                }
-            }
+        // ======================== MODAL ========================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
-        loadDashboard();
+        // ======================== INIT ========================
+        async function loadAll() {
+            await loadStats();
+            await loadDashboardQueue();
+        }
+
+        loadAll();
+        setInterval(loadAll, 10000); // Auto-refresh every 10 seconds
     </script>
 </body>
 </html>
-

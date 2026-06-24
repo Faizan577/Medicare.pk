@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Portal - MediQueue</title>
+    <title>Patient Portal - MediCare</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <link href="css/patient.css" rel="stylesheet">
 </head>
 
@@ -13,21 +14,53 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fas fa-hospital"></i>
-            <span>MediQueue</span>
+            <img src="img/logo.png" alt="MediCare logo" class="sidebar-logo">
+            <span>MediCare</span>
         </div>
         <nav>
-            <a href="#book" class="active">
+            <a href="#overview" class="active">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#book">
                 <i class="fas fa-calendar-check"></i>
                 <span>Book Appointment</span>
             </a>
             <a href="#queue">
-                <i class="fas fa-list"></i>
-                <span>Join Queue</span>
+                <i class="fas fa-ticket-alt"></i>
+                <span>Token & Live Queue</span>
             </a>
-            <a href="#status">
-                <i class="fas fa-clock"></i>
-                <span>Queue Status</span>
+            <a href="#my-appointments">
+                <i class="fas fa-calendar-alt"></i>
+                <span>My Appointments</span>
+            </a>
+            <a href="#my-tokens">
+                <i class="fas fa-receipt"></i>
+                <span>My Tokens</span>
+            </a>
+            <a href="#my-consultations">
+                <i class="fas fa-notes-medical"></i>
+                <span>Consultation History</span>
+            </a>
+            <a href="#my-prescriptions">
+                <i class="fas fa-prescription"></i>
+                <span>Prescriptions</span>
+            </a>
+            <a href="#my-followups">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Follow-Ups</span>
+            </a>
+            <a href="#my-reviews">
+                <i class="fas fa-comment-alt"></i>
+                <span>My Reviews</span>
+            </a>
+            <a href="#my-notifications">
+                <i class="fas fa-bell"></i>
+                <span>My Notifications</span>
+            </a>
+            <a href="#profile">
+                <i class="fas fa-user-circle"></i>
+                <span>My Profile</span>
             </a>
             <a href="#doctors">
                 <i class="fas fa-stethoscope"></i>
@@ -59,66 +92,501 @@
         </div>
 
         <div class="grid-container">
-            <!-- Book Appointment Card -->
-            <div class="card" id="book">
+            <!-- Overview Dashboard Home Card -->
+            <div class="card" id="overview">
+                <div class="card-header border-0 pb-0" style="background: white;">
+                    <h5 class="fw-bold text-dark m-0"><i class="fas fa-home text-primary"></i> Patient Dashboard</h5>
+                </div>
+                <div class="card-body pt-3">
+                    <!-- Welcome Hero Banner -->
+                    <div class="welcome-banner mb-4 text-white" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 30px; border-radius: 16px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm);">
+                        <div style="position: relative; z-index: 5; max-width: 70%;">
+                            <h2 class="fw-bold mb-2">Hello, <span id="bannerUserName">Patient</span>!</h2>
+                            <p class="m-0 opacity-90" style="font-size: 0.95rem;">Welcome back to MediCare. Manage your bookings, check live queue status, and schedule appointments with our specialists from one place.</p>
+                            <p class="mt-3 mb-0 fw-semibold" style="font-size: 0.85rem; background: rgba(255,255,255,0.2); display: inline-block; padding: 4px 12px; border-radius: 20px;"><i class="fas fa-heartbeat"></i> Quote of the day: Your health is your greatest wealth.</p>
+                        </div>
+                        <i class="fas fa-clinic-medical" style="position: absolute; right: -20px; bottom: -20px; font-size: 10rem; opacity: 0.1; color: white;"></i>
+                    </div>
+
+                    <!-- Quick Stats Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 border d-flex align-items-center gap-3 bg-white" style="box-shadow: var(--shadow-sm);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #ecfeff; color: #06b6d4;"><i class="fas fa-calendar-check" style="font-size: 1.25rem;"></i></div>
+                                <div>
+                                    <div class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase;">Next Appointment</div>
+                                    <div class="fw-bold text-dark" id="overviewNextAppt" style="font-size: 0.95rem;">None Scheduled</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 border d-flex align-items-center gap-3 bg-white" style="box-shadow: var(--shadow-sm);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #fdf2f8; color: #ec4899;"><i class="fas fa-ticket-alt" style="font-size: 1.25rem;"></i></div>
+                                <div>
+                                    <div class="text-muted fw-semibold" style="font-size: 0.8rem; text-transform: uppercase;">Live Queue Token</div>
+                                    <div class="fw-bold text-dark" id="overviewQueueToken" style="font-size: 0.95rem;">Not in Queue</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Grid Navigation -->
+                    <h5 class="fw-bold text-dark mb-3">Quick Actions</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="action-nav-card text-center p-4 rounded-3 border bg-white h-100 transition" onclick="switchTab('#book'); window.location.hash='#book';" style="cursor: pointer; box-shadow: var(--shadow-sm);">
+                                <div class="action-nav-icon rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; background: var(--primary-light); color: var(--primary); transition: 0.3s;"><i class="fas fa-calendar-alt fa-lg"></i></div>
+                                <h6 class="fw-bold text-dark">Book Appointment</h6>
+                                <p class="text-muted m-0" style="font-size: 0.8rem;">Schedule offline/online sessions with expert doctors</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="action-nav-card text-center p-4 rounded-3 border bg-white h-100 transition" onclick="switchTab('#queue'); window.location.hash='#queue';" style="cursor: pointer; box-shadow: var(--shadow-sm);">
+                                <div class="action-nav-icon rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; background: #fff7ed; color: #f97316; transition: 0.3s;"><i class="fas fa-users fa-lg"></i></div>
+                                <h6 class="fw-bold text-dark">Join Live Queue</h6>
+                                <p class="text-muted m-0" style="font-size: 0.8rem;">Instantly join the clinic queue and generate a token</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="action-nav-card text-center p-4 rounded-3 border bg-white h-100 transition" onclick="switchTab('#status'); window.location.hash='#status';" style="cursor: pointer; box-shadow: var(--shadow-sm);">
+                                <div class="action-nav-icon rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; background: #f0fdf4; color: #22c55e; transition: 0.3s;"><i class="fas fa-clock fa-lg"></i></div>
+                                <h6 class="fw-bold text-dark">Queue Status</h6>
+                                <p class="text-muted m-0" style="font-size: 0.8rem;">Monitor live position and estimated waiting time</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="action-nav-card text-center p-4 rounded-3 border bg-white h-100 transition" onclick="switchTab('#doctors'); window.location.hash='#doctors';" style="cursor: pointer; box-shadow: var(--shadow-sm);">
+                                <div class="action-nav-icon rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; background: #faf5ff; color: #a855f7; transition: 0.3s;"><i class="fas fa-user-md fa-lg"></i></div>
+                                <h6 class="fw-bold text-dark">Available Doctors</h6>
+                                <p class="text-muted m-0" style="font-size: 0.8rem;">Browse our list of doctors, qualification, and reviews</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Healthy Guidelines Box -->
+                    <div class="mt-4 p-3 rounded-3 border d-flex gap-3 align-items-start bg-light">
+                        <i class="fas fa-shield-alt text-success mt-1" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h6 class="fw-bold text-dark m-0">Safety & Support Guidelines</h6>
+                            <p class="text-muted m-0 mt-1" style="font-size: 0.85rem;">For emergency services, call our helpline directly at <strong>1122</strong>. Make sure to arrive 10 minutes before your scheduled appointment time to complete check-in procedures.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Book Appointment Card -->
+            <div class="card" id="book" style="grid-column: 1 / -1;">
                 <div class="card-header">
                     <i class="fas fa-calendar-check"></i>
                     <h5>Book Appointment</h5>
                 </div>
                 <div class="card-body">
-                    <form id="bookForm">
-                        <div class="form-group">
-                            <label for="doctorSelect">Select Doctor</label>
-                            <select id="doctorSelect" class="form-select" required></select>
+                    <!-- Progress Stepper -->
+                    <div class="booking-stepper">
+                        <div class="step active" id="step-indicator-1">
+                            <div class="step-num">1</div>
+                            <div class="step-label">Department</div>
                         </div>
-                        <div class="form-group">
-                            <label for="dateTime">Date & Time</label>
-                            <input type="datetime-local" id="dateTime" class="form-control" required>
+                        <div class="step-line" id="step-line-1"></div>
+                        <div class="step" id="step-indicator-2">
+                            <div class="step-num">2</div>
+                            <div class="step-label">Doctor</div>
                         </div>
-                        <button type="submit" class="btn-submit">Book Appointment</button>
-                    </form>
-                    <div id="bookMessage"></div>
-                </div>
-            </div>
+                        <div class="step-line" id="step-line-2"></div>
+                        <div class="step" id="step-indicator-3">
+                            <div class="step-num">3</div>
+                            <div class="step-label">Schedule</div>
+                        </div>
+                        <div class="step-line" id="step-line-3"></div>
+                        <div class="step" id="step-indicator-4">
+                            <div class="step-num">4</div>
+                            <div class="step-label">Confirmation</div>
+                        </div>
+                    </div>
 
-            <!-- Join Queue Card -->
-            <div class="card" id="queue">
-                <div class="card-header">
-                    <i class="fas fa-list"></i>
-                    <h5>Join Queue</h5>
-                </div>
-                <div class="card-body">
-                    <form id="queueForm">
-                        <div class="form-group">
-                            <label for="queueDoctorSelect">Select Doctor</label>
-                            <select id="queueDoctorSelect" class="form-select" required></select>
-                        </div>
-                        <div class="form-group">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <input type="checkbox" id="emergency" style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="emergency" style="margin: 0; cursor: pointer; font-weight: 500;">Mark as Emergency</label>
+                    <!-- Step 1: Department Selection -->
+                    <div id="booking-step-1" class="booking-step-pane">
+                        <h4 class="fw-bold mb-3 text-dark text-center" style="font-size: 1.3rem;">Select a Medical Department</h4>
+                        <div class="departments-grid">
+                            <div class="dept-card" onclick="selectDepartment('Cardiology', 'fa-heartbeat')">
+                                <div class="dept-icon" style="background: #fef2f2; color: #ef4444;"><i class="fas fa-heartbeat"></i></div>
+                                <h5>Cardiology</h5>
+                                <p>Heart and blood vessel care</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('Neurology', 'fa-brain')">
+                                <div class="dept-icon" style="background: #faf5ff; color: #a855f7;"><i class="fas fa-brain"></i></div>
+                                <h5>Neurology</h5>
+                                <p>Brain and nervous system</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('Orthopedics', 'fa-bone')">
+                                <div class="dept-icon" style="background: #f0fdf4; color: #22c55e;"><i class="fas fa-bone"></i></div>
+                                <h5>Orthopedics</h5>
+                                <p>Bones, joints, and muscles</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('Dermatology', 'fa-hand-holding-medical')">
+                                <div class="dept-icon" style="background: #fff7ed; color: #f97316;"><i class="fas fa-hand-holding-medical"></i></div>
+                                <h5>Dermatology</h5>
+                                <p>Skin, hair, and nail health</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('Gynecology', 'fa-female')">
+                                <div class="dept-icon" style="background: #fdf2f8; color: #ec4899;"><i class="fas fa-female"></i></div>
+                                <h5>Gynecology</h5>
+                                <p>Women's health & pregnancy</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('Pediatrics', 'fa-baby')">
+                                <div class="dept-icon" style="background: #f0f9ff; color: #0ea5e9;"><i class="fas fa-baby"></i></div>
+                                <h5>Pediatrics</h5>
+                                <p>Child healthcare & treatment</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('ENT', 'fa-headphones')">
+                                <div class="dept-icon" style="background: #f5f5f4; color: #78716c;"><i class="fas fa-headphones"></i></div>
+                                <h5>ENT</h5>
+                                <p>Ear, nose, and throat care</p>
+                            </div>
+                            <div class="dept-card" onclick="selectDepartment('General Medicine', 'fa-stethoscope')">
+                                <div class="dept-icon" style="background: #ecfeff; color: #06b6d4;"><i class="fas fa-stethoscope"></i></div>
+                                <h5>General Medicine</h5>
+                                <p>General primary health care</p>
                             </div>
                         </div>
-                        <button type="submit" class="btn-submit">Join Queue</button>
-                    </form>
-                    <div id="queueMessage"></div>
+                    </div>
+
+                    <!-- Step 2: Available Doctors -->
+                    <div id="booking-step-2" class="booking-step-pane" style="display: none;">
+                        <div class="step-actions">
+                            <button type="button" class="btn-back" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Change Department</button>
+                            <div class="selected-dept-indicator">
+                                <i class="fas fa-stethoscope" id="selected-dept-icon"></i>
+                                <span id="selected-dept-name">General Medicine</span>
+                            </div>
+                        </div>
+
+                        <!-- Filters and Sorting Panel -->
+                        <div class="filters-panel">
+                            <div class="filter-group search-filter">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="doctorSearch" class="form-control" placeholder="Search doctor by name..." oninput="filterDoctors()">
+                            </div>
+                            <div class="filter-group sort-filter">
+                                <label for="doctorSort"><i class="fas fa-sort-amount-down"></i> Sort:</label>
+                                <select id="doctorSort" class="form-select" onchange="filterDoctors()">
+                                    <option value="recommended">Recommended (Default)</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="experience">Most Experienced</option>
+                                    <option value="fee">Lowest Consultation Fee</option>
+                                    <option value="earliest">Earliest Available</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Doctors Deck -->
+                        <div class="doctors-deck" id="bookingDoctorList">
+                            <!-- Doctor cards injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Booking Schedule -->
+                    <div id="booking-step-3" class="booking-step-pane" style="display: none;">
+                        <button type="button" class="btn-back" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back to Doctors</button>
+                        
+                        <div class="booking-summary-card mt-3">
+                            <div class="booking-summary-doc">
+                                <img id="summaryDocPic" src="" alt="Doctor Profile">
+                                <div>
+                                    <h4 id="summaryDocName" class="text-dark">Dr. Sarah Jenkins</h4>
+                                    <p id="summaryDocSpecialty" class="doc-specialty-badge m-0">Cardiology</p>
+                                    <p id="summaryDocHospital" class="text-muted m-0 mt-1" style="font-size: 0.9rem;"><i class="fas fa-hospital text-primary"></i> Metro Heart Center</p>
+                                </div>
+                            </div>
+                            <div class="booking-summary-details">
+                                <div class="px-2"><span class="label">Consultation Fee</span><strong id="summaryDocFee" class="text-dark">Rs. 1,500</strong></div>
+                                <div class="px-2"><span class="label">Available Timings</span><strong id="summaryDocTiming" class="text-dark">09:00 AM - 01:00 PM</strong></div>
+                            </div>
+                        </div>
+
+                        <form id="enhancedBookForm">
+                            <div class="form-group mt-4">
+                                <label for="enhancedDateTime" class="form-label fw-semibold" style="font-size: 0.95rem;"><i class="fas fa-calendar-alt text-primary"></i> Select Appointment Date & Time</label>
+                                <input type="datetime-local" id="enhancedDateTime" class="form-control" required>
+                                <small class="text-muted d-block mt-2"><i class="fas fa-info-circle text-primary"></i> Please choose a date and time slot that aligns with the doctor's daily availability.</small>
+                            </div>
+                            
+                            <div class="confirm-booking-box">
+                                <button type="submit" class="btn-confirm-booking">Confirm & Book Appointment</button>
+                            </div>
+                        </form>
+                        <div id="enhancedBookMessage"></div>
+                    </div>
+
+                    <!-- Step 4: Booking Success Confirmation -->
+                    <div id="booking-step-4" class="booking-step-pane text-center" style="display: none; padding: 30px 10px;">
+                        <div class="success-animation-wrapper">
+                            <div class="success-checkmark">
+                                <div class="check-icon">
+                                    <span class="icon-line line-tip"></span>
+                                    <span class="icon-line line-long"></span>
+                                    <div class="icon-circle"></div>
+                                    <div class="icon-fix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="success-title fw-bold text-success mt-3" style="font-size: 1.5rem;">Appointment Confirmed!</h3>
+                        <p class="success-desc text-muted mx-auto" style="max-width: 500px; font-size: 0.95rem;">Your booking is complete. A confirmation email with the appointment details and guidelines has been sent to your inbox.</p>
+                        
+                        <div class="receipt-card">
+                            <div class="receipt-row"><span>👨‍⚕️ Doctor:</span><strong id="receiptDoc">Dr. Sarah Jenkins</strong></div>
+                            <div class="receipt-row"><span>📅 Date & Time:</span><strong id="receiptTime">Monday, Jun 15, 2026 at 10:30 AM</strong></div>
+                            <div class="receipt-row"><span>🏥 Hospital:</span><span id="receiptHospital" class="fw-semibold">Metro Heart Center</span></div>
+                            <div class="receipt-row"><span>💳 Consultation Fee:</span><strong id="receiptFee" class="text-primary">Rs. 1,500</strong></div>
+                        </div>
+                        
+                        <button type="button" class="btn-done px-5 py-3 mt-2" onclick="goToStep(1)">Book Another Appointment</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Queue Status Card -->
-            <div class="card" id="status">
-                <div class="card-header">
-                    <i class="fas fa-clock"></i>
-                    <h5>Queue Status</h5>
+            <!-- Token & Live Queue System Card -->
+            <div class="card" id="queue" style="grid-column: 1 / -1;">
+                <div class="card-header text-white" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 20px 25px; border-bottom: none;">
+                    <i class="fas fa-ticket-alt text-white"></i>
+                    <h5 class="text-white m-0">Token & Live Queue System</h5>
                 </div>
                 <div class="card-body">
-                    <div class="status-box">
-                        <div class="status-label">Your Position</div>
-                        <div class="status-value" id="position">-</div>
+                    <!-- Progress Stepper -->
+                    <div class="booking-stepper mb-4" id="token-stepper">
+                        <div class="step active" id="token-step-indicator-1">
+                            <div class="step-num">1</div>
+                            <div class="step-label">Select Hospital</div>
+                        </div>
+                        <div class="step-line" id="token-step-line-1"></div>
+                        <div class="step" id="token-step-indicator-2">
+                            <div class="step-num">2</div>
+                            <div class="step-label">Select Department</div>
+                        </div>
+                        <div class="step-line" id="token-step-line-2"></div>
+                        <div class="step" id="token-step-indicator-3">
+                            <div class="step-num">3</div>
+                            <div class="step-label">Choose Doctor</div>
+                        </div>
+                        <div class="step-line" id="token-step-line-3"></div>
+                        <div class="step" id="token-step-indicator-4">
+                            <div class="step-num">4</div>
+                            <div class="step-label">Live Queue Dashboard</div>
+                        </div>
                     </div>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
-                        <div style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px;">Estimated Wait Time</div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #2c3e50;" id="wait">-</div>
+
+                    <!-- Step 1: Hospital Selection -->
+                    <div id="token-step-pane-1" class="token-step-pane">
+                        <!-- Called Alert Banner -->
+                        <div id="called-alert-banner" class="mb-4" style="display:none;">
+                            <div class="p-4 rounded-4 border shadow-sm" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border-color: #fcd34d !important; animation: patient-called-pulse 2s infinite;">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:52px;height:52px;background:#fef3c7;flex-shrink:0;border:2px solid #fcd34d;">
+                                        <i class="fas fa-bell fa-lg" style="color:#d97706;"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1" style="font-size:1.05rem;color:#92400e;">&#x1F514; Your Turn Has Arrived!</h6>
+                                        <p class="mb-2" style="font-size:0.88rem;color:#78350f;line-height:1.4;"
+                                           id="called-banner-msg">Please report to the doctor's room immediately. You have 5 minutes.</p>
+                                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                                            <span id="patient-countdown-chip" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:700;background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d;">
+                                                &#x23F1; 05:00
+                                            </span>
+                                            <span style="font-size:0.8rem;color:#92400e;">Report before the timer runs out!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rejoin Banner -->
+                        <div id="rejoin-banner-container" class="mb-4" style="display: none;"></div>
+
+                        <h4 class="fw-bold mb-4 text-dark text-center" style="font-size: 1.3rem;">Select a Partner Hospital</h4>
+                        <div class="row g-4" id="hospital-list">
+                            <!-- Hospital Cards injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Department Selection -->
+                    <div id="token-step-pane-2" class="token-step-pane" style="display: none;">
+                        <div class="step-actions">
+                            <button type="button" class="btn-back" onclick="goTokenStep(1)"><i class="fas fa-arrow-left"></i> Change Hospital</button>
+                            <div class="selected-dept-indicator bg-info-subtle text-info-emphasis">
+                                <i class="fas fa-hospital"></i>
+                                <span id="selected-hospital-name-dept">Hospital Name</span>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold mb-4 text-dark text-center" style="font-size: 1.3rem;">Select Medical Department</h4>
+                        <div class="departments-grid" id="hospital-departments-grid">
+                            <!-- Department cards injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Doctor Selection -->
+                    <div id="token-step-pane-3" class="token-step-pane" style="display: none;">
+                        <div class="step-actions">
+                            <button type="button" class="btn-back" onclick="goTokenStep(2)"><i class="fas fa-arrow-left"></i> Change Department</button>
+                            <div class="selected-dept-indicator">
+                                <i class="fas fa-stethoscope"></i>
+                                <span id="selected-dept-name-doc">Department Name</span>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold mb-4 text-dark text-center" style="font-size: 1.3rem;">Select Doctor & Generate Token</h4>
+                        
+                        <!-- Filters Panel -->
+                        <div class="filters-panel">
+                            <div class="filter-group search-filter">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="tokenDocSearch" class="form-control" placeholder="Search doctor by name..." oninput="filterTokenDoctors()">
+                            </div>
+                            <div class="filter-group sort-filter">
+                                <label for="tokenDocSort"><i class="fas fa-sort-amount-down"></i> Sort:</label>
+                                <select id="tokenDocSort" class="form-select" onchange="filterTokenDoctors()">
+                                    <option value="recommended">Recommended (Default)</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="experience">Most Experienced</option>
+                                    <option value="fee">Lowest Consultation Fee</option>
+                                    <option value="earliest">Earliest Available</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Doctors Deck -->
+                        <div class="row g-4 mb-4" id="recommended-doctors-row">
+                            <!-- Recommended doctor spotlight card -->
+                        </div>
+                        <div class="doctors-deck" id="token-doctor-list">
+                            <!-- Doctor cards injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Token Receipt & Live Queue Tracking Dashboard -->
+                    <div id="token-step-pane-4" class="token-step-pane" style="display: none;">
+                        <!-- Receipt Screen -->
+                        <div id="token-success-receipt" class="mb-5" style="display: none;">
+                            <div class="success-animation-wrapper">
+                                <div class="success-checkmark">
+                                    <div class="check-icon">
+                                        <span class="icon-line line-tip"></span>
+                                        <span class="icon-line line-long"></span>
+                                        <div class="icon-circle"></div>
+                                        <div class="icon-fix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="success-title fw-bold text-success text-center mt-3" style="font-size: 1.5rem;">Token Generated Successfully!</h3>
+                            <p class="success-desc text-muted text-center mx-auto" style="max-width: 500px; font-size: 0.95rem;">You are registered in the live queue. Present this token at the hospital desk.</p>
+                            
+                            <div class="receipt-card mx-auto shadow-sm" style="max-width: 500px; border: 2px dashed var(--border-color); border-radius: 16px; background: white; padding: 25px; position: relative;">
+                                <div style="position: absolute; left: -10px; top: 50%; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-light); transform: translateY(-50%); border-right: 1px solid var(--border-color);"></div>
+                                <div style="position: absolute; right: -10px; top: 50%; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-light); transform: translateY(-50%); border-left: 1px solid var(--border-color);"></div>
+                                
+                                <div class="text-center mb-4 border-bottom pb-3">
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">Visit Token</h6>
+                                    <div class="fw-extrabold text-primary" id="receipt-token-number" style="font-size: 3rem; line-height: 1;">00</div>
+                                </div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>👨‍⚕️ Doctor:</span><strong id="receipt-token-doctor" class="text-dark">Dr. Name</strong></div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>🏥 Hospital:</span><span id="receipt-token-hospital" class="fw-semibold text-dark">Hospital Name</span></div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>🩺 Department:</span><span id="receipt-token-dept" class="fw-semibold text-dark">Department</span></div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>📅 Date:</span><strong id="receipt-token-date" class="text-dark">Date</strong></div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>⏰ Time:</span><strong id="receipt-token-time" class="text-dark">Time</strong></div>
+                                <div class="receipt-row d-flex justify-content-between mb-2"><span>🔢 Queue Position:</span><strong id="receipt-token-position" class="text-info">0</strong></div>
+                                <div class="receipt-row d-flex justify-content-between border-top pt-2 mt-2"><span>Estimated Wait Time:</span><strong id="receipt-token-wait" class="text-warning">0 Minutes</strong></div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-primary px-5 py-3 border-0" onclick="showLiveTracking()" style="border-radius: 12px; font-weight: 700; background: var(--primary);">Go to Live Queue Dashboard</button>
+                            </div>
+                        </div>
+
+                        <!-- Live Tracking Dashboard -->
+                        <div id="live-queue-dashboard" style="display: none;">
+                            <div class="row g-4 align-items-stretch">
+                                <!-- Queue Status Side Panel -->
+                                <div class="col-lg-5">
+                                    <div class="p-4 rounded-4 border bg-white h-100 shadow-sm d-flex flex-column justify-content-between">
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                                <h5 class="fw-bold text-dark m-0"><i class="fas fa-tv text-primary"></i> Live Queue Board</h5>
+                                                <div id="queue-live-indicator" class="d-flex align-items-center gap-2" style="font-size: 0.8rem; font-weight: 600; color: #22c55e;">
+                                                    <span class="spinner-grow spinner-grow-sm text-success" role="status" aria-hidden="true" style="width: 10px; height: 10px;"></span> Live Sync
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row g-3 text-center mb-4">
+                                                <div class="col-6">
+                                                    <div class="p-3 bg-light rounded-3 border">
+                                                        <span class="text-muted fw-semibold d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Active Token</span>
+                                                        <strong class="fs-2 text-success" id="board-active-token">01</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="p-3 bg-light rounded-3 border">
+                                                        <span class="text-muted fw-semibold d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Next Token</span>
+                                                        <strong class="fs-2 text-info" id="board-next-token">02</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="p-3 rounded-3 mb-4" id="board-user-token-container" style="background: var(--primary-light); border: 1px solid var(--primary-light); color: var(--primary-dark);">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">Your Token Status</span>
+                                                    <span class="badge bg-primary" id="board-user-status-badge" style="font-size: 0.8rem;">Waiting</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <span class="fs-5 fw-semibold">Token: <strong class="fs-3" id="board-user-token">None</strong></span>
+                                                    <span class="fs-6 fw-semibold"><span id="board-patients-before">0</span> Patients Ahead</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-3 text-center mb-4">
+                                                <div class="col-12">
+                                                    <div class="p-3 rounded-3 border bg-warning-subtle text-warning-emphasis border-warning-subtle" id="board-wait-box">
+                                                        <span class="text-muted fw-semibold d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted) !important;">Estimated Wait Time</span>
+                                                        <strong class="fs-3" id="board-wait-time">0 Minutes</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <!-- Queue Progress Bar -->
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between text-muted mb-2" style="font-size: 0.8rem; font-weight: 500;">
+                                                    <span>Queue Progress</span>
+                                                    <span id="queue-progress-percentage">0%</span>
+                                                </div>
+                                                <div class="progress" style="height: 10px; border-radius: 5px; background: #e2e8f0;">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="queue-progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex gap-2" id="live-indicators-container">
+                                                <!-- Dynamic badges (e.g. EMERGENCY PRIORITY ACTIVE) -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Queue Visualizer Panel -->
+                                <div class="col-lg-7">
+                                    <div class="p-4 rounded-4 border bg-white h-100 shadow-sm d-flex flex-column">
+                                        <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom"><i class="fas fa-users text-primary"></i> Queue Visualizer</h5>
+                                        
+                                        <div class="d-flex flex-column gap-3 overflow-y-auto pr-2" id="board-queue-visualizer-list" style="max-height: 400px; flex-grow: 1;">
+                                            <!-- Patient queue slots -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-5">
+                                <button type="button" class="btn btn-outline-danger px-4 py-2" id="btn-leave-queue" onclick="leaveQueue()" style="border-radius: 8px; font-weight: 600;">Cancel / Leave Queue</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,10 +601,367 @@
                     <div id="doctorList"></div>
                 </div>
             </div>
+
+            <!-- My Appointments Card -->
+            <div class="card" id="my-appointments" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-calendar-check text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">My Appointments & Booking History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Doctor Name</th>
+                                    <th>Department</th>
+                                    <th>Hospital</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myAppointmentsList">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Tokens Card -->
+            <div class="card" id="my-tokens" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-ticket-alt text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">My Generated Tokens & Visit History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Token Number</th>
+                                    <th>Doctor Name</th>
+                                    <th>Hospital</th>
+                                    <th>Generated At</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myTokensList">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consultation History Card -->
+            <div class="card" id="my-consultations" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-notes-medical text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">Consultation History</h5>
+                </div>
+                <div class="card-body">
+                    <div id="myConsultationsList">
+                        <div class="text-center text-muted py-5"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prescriptions Card -->
+            <div class="card" id="my-prescriptions" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-prescription text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">My Prescriptions</h5>
+                </div>
+                <div class="card-body">
+                    <div id="myPrescriptionsList">
+                        <div class="text-center text-muted py-5"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Follow-Ups Card -->
+            <div class="card" id="my-followups" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-calendar-plus text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">Follow-Up Recommendations</h5>
+                </div>
+                <div class="card-body">
+                    <div id="myFollowupsList">
+                        <div class="text-center text-muted py-5"><div class="spinner-border text-primary" role="status"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Reviews Card -->
+            <div class="card" id="my-reviews" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-comment-alt text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">My Submitted Reviews</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <!-- Submit New Review Form -->
+                        <div class="col-lg-5">
+                            <div class="p-4 rounded-4 border bg-light">
+                                <h5 class="fw-bold text-dark mb-3"><i class="fas fa-edit text-primary"></i> Write a Doctor Review</h5>
+                                <form id="submitReviewForm">
+                                    <div class="form-group mb-3">
+                                        <label for="reviewDocSelect" class="form-label fw-semibold">Select Doctor</label>
+                                        <select id="reviewDocSelect" class="form-select" required>
+                                            <option value="">Choose a doctor...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-semibold">Rating</label>
+                                        <div class="d-flex gap-2 fs-4" id="reviewRatingStars">
+                                            <i class="far fa-star text-warning" style="cursor: pointer;" data-value="1"></i>
+                                            <i class="far fa-star text-warning" style="cursor: pointer;" data-value="2"></i>
+                                            <i class="far fa-star text-warning" style="cursor: pointer;" data-value="3"></i>
+                                            <i class="far fa-star text-warning" style="cursor: pointer;" data-value="4"></i>
+                                            <i class="far fa-star text-warning" style="cursor: pointer;" data-value="5"></i>
+                                        </div>
+                                        <input type="hidden" id="reviewRatingVal" value="0" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="reviewComment" class="form-label fw-semibold">Your Review / Comment</label>
+                                        <textarea id="reviewComment" class="form-control" rows="4" placeholder="Share your experience with this doctor..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2" style="border-radius: 8px;"><i class="fas fa-paper-plane me-1"></i> Submit Review</button>
+                                </form>
+                                <div id="submitReviewMessage" class="mt-3"></div>
+                            </div>
+                        </div>
+                        <!-- Submitted Reviews List -->
+                        <div class="col-lg-7">
+                            <h5 class="fw-bold text-dark mb-3"><i class="fas fa-list text-primary"></i> Submitted Reviews</h5>
+                            <div id="myReviewsList" class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Notifications Card -->
+            <div class="card" id="my-notifications" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-bell text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">My Notifications & Alerts</h5>
+                </div>
+                <div class="card-body">
+                    <div id="myNotificationsList" class="d-flex flex-column gap-2" style="max-height: 600px; overflow-y: auto;">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Profile Card -->
+            <div class="card" id="profile" style="grid-column: 1 / -1; display: none;">
+                <div class="card-header" style="background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-user-circle text-primary"></i>
+                    <h5 class="fw-bold text-dark m-0">Profile Settings</h5>
+                </div>
+                <div class="card-body" style="max-width: 600px; margin: 0 auto;">
+                    <form id="profileSettingsForm">
+                        <div class="form-group mb-3">
+                            <label for="profileName" class="form-label fw-semibold">Full Name</label>
+                            <input type="text" id="profileName" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="profileEmail" class="form-label fw-semibold">Email Address (Read Only)</label>
+                            <input type="email" id="profileEmail" class="form-control" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="profilePhone" class="form-label fw-semibold">Phone Number</label>
+                            <input type="text" id="profilePhone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-2" style="border-radius: 8px;"><i class="fas fa-save me-1"></i> Save Changes</button>
+                    </form>
+                    <div id="profileSettingsMessage" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Reviews & Hospital Details Modal -->
+    <div class="modal fade" id="doctorDetailsModal" tabindex="-1" aria-labelledby="doctorDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 20px 25px; border-bottom: none;">
+                    <h5 class="modal-title fw-bold" id="doctorDetailsModalLabel"><i class="fas fa-user-md"></i> Doctor Profile & Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 30px;">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-3 text-center">
+                            <img id="modalDocPic" src="" alt="Doctor Pic" class="img-fluid rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border: 4px solid var(--primary-light);">
+                        </div>
+                        <div class="col-md-9 mt-3 mt-md-0">
+                            <h3 id="modalDocName" class="fw-bold text-dark m-0">Dr. Sarah Jenkins</h3>
+                            <p id="modalDocSpecialty" class="text-primary fw-semibold m-0" style="font-size: 1.1rem;"></p>
+                            <p id="modalDocQualification" class="text-muted m-0" style="font-size: 0.95rem;"></p>
+                            <div class="d-flex align-items-center gap-3 mt-2">
+                                <div class="rating-stars" id="modalDocRating">
+                                    <!-- Stars injected by JS -->
+                                </div>
+                                <span id="modalDocReviewsCount" class="text-muted fw-medium" style="font-size: 0.9rem;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs border-bottom-0 mb-3" id="detailsTab" role="tablist" style="gap: 10px;">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active border-0 px-4 py-2" id="hospital-tab" data-bs-toggle="tab" data-bs-target="#hospital-panel" type="button" role="tab" aria-controls="hospital-panel" aria-selected="true" style="border-radius: 30px; font-weight: 600;">Hospital Info</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link border-0 px-4 py-2" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-panel" type="button" role="tab" aria-controls="reviews-panel" aria-selected="false" style="border-radius: 30px; font-weight: 600;">Doctor Reviews (<span id="modalReviewsTabCount">0</span>)</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link border-0 px-4 py-2" id="hospital-reviews-tab" data-bs-toggle="tab" data-bs-target="#hospital-reviews-panel" type="button" role="tab" aria-controls="hospital-reviews-panel" aria-selected="false" style="border-radius: 30px; font-weight: 600;">Hospital Reviews</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="detailsTabContent" style="background: var(--bg-light); border-radius: 16px; padding: 20px;">
+                        <!-- Hospital Info Panel -->
+                        <div class="tab-pane fade show active" id="hospital-panel" role="tabpanel" aria-labelledby="hospital-tab">
+                            <div class="hospital-info-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                                    <div>
+                                        <h4 id="modalHospitalName" class="fw-bold text-dark m-0">Metro Heart Clinic</h4>
+                                        <p id="modalHospitalAddress" class="text-muted mt-1 mb-0" style="font-size: 0.95rem;"><i class="fas fa-map-marker-alt text-danger"></i> Sector G-9, Islamabad</p>
+                                    </div>
+                                    <div class="hospital-rating-badge" style="background: #fff; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-star text-warning"></i> <strong id="modalHospitalRating" class="text-dark">4.8</strong>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="fw-semibold text-muted mb-3" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Available Hospital Facilities</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="facility-badge d-flex align-items-center gap-2 p-3 rounded-3" id="facilityEmergency" style="background: #fff; border: 1px solid var(--border-color);">
+                                            <i class="fas fa-ambulance text-danger" style="font-size: 1.25rem;"></i>
+                                            <div>
+                                                <div class="fw-semibold" style="font-size: 0.9rem;">Emergency</div>
+                                                <div class="facility-status text-success" style="font-size: 0.8rem;">24/7 Available</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="facility-badge d-flex align-items-center gap-2 p-3 rounded-3" id="facilityPharmacy" style="background: #fff; border: 1px solid var(--border-color);">
+                                            <i class="fas fa-prescription-bottle-alt text-primary" style="font-size: 1.25rem;"></i>
+                                            <div>
+                                                <div class="fw-semibold" style="font-size: 0.9rem;">Pharmacy</div>
+                                                <div class="facility-status text-success" style="font-size: 0.8rem;">Available</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="facility-badge d-flex align-items-center gap-2 p-3 rounded-3" id="facilityLaboratory" style="background: #fff; border: 1px solid var(--border-color);">
+                                            <i class="fas fa-flask text-success" style="font-size: 1.25rem;"></i>
+                                            <div>
+                                                <div class="fw-semibold" style="font-size: 0.9rem;">Laboratory</div>
+                                                <div class="facility-status text-success" style="font-size: 0.8rem;">Available</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Reviews Panel -->
+                        <div class="tab-pane fade" id="reviews-panel" role="tabpanel" aria-labelledby="reviews-tab">
+                            <div class="reviews-list-container" id="modalReviewsList" style="max-height: 250px; overflow-y: auto;">
+                                <!-- Patient reviews injected by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Hospital Reviews Panel -->
+                        <div class="tab-pane fade" id="hospital-reviews-panel" role="tabpanel" aria-labelledby="hospital-reviews-tab">
+                            <!-- Ratings Breakdown -->
+                            <div class="p-3 mb-4 rounded-3 bg-white border" id="hospital-rating-breakdown" style="display: none;">
+                                <h6 class="fw-bold text-dark mb-3">Facility Quality Breakdown</h6>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-ambulance text-danger me-2"></i>Emergency Service</span>
+                                            <span class="fw-bold" id="lbl-hosp-emerg-rating">0.0</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-danger" id="pb-hosp-emerg" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-users-cog text-primary me-2"></i>Staff Behavior</span>
+                                            <span class="fw-bold" id="lbl-hosp-staff-rating">0.0</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" id="pb-hosp-staff" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-sparkles text-success me-2"></i>Cleanliness</span>
+                                            <span class="fw-bold" id="lbl-hosp-clean-rating">0.0</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" id="pb-hosp-clean" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-smile text-warning me-2"></i>Overall Experience</span>
+                                            <span class="fw-bold" id="lbl-hosp-overall-rating">0.0</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" id="pb-hosp-overall" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="reviews-list-container" id="modalHospitalReviewsList" style="max-height: 250px; overflow-y: auto;">
+                                <!-- Hospital reviews injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-secondary px-4 py-2 border-0" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600; background: #e2e8f0; color: #475569;">Close</button>
+                    <button type="button" class="btn btn-primary px-4 py-2 border-0" id="btnModalBook" style="border-radius: 10px; font-weight: 600; background: var(--primary);">Book Appointment Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Queue Confirmation Modal -->
+    <div class="modal fade" id="queueConfirmModal" tabindex="-1" aria-labelledby="queueConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 20px 25px; border-bottom: none;">
+                    <h5 class="modal-title fw-bold" id="queueConfirmModalLabel"><i class="fas fa-ticket-alt"></i> Generate Visit Token</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <p class="text-muted" style="font-size: 0.95rem;">You are generating a token for a visit with <strong id="confirm-doc-name" class="text-dark">Dr. Name</strong> at <span id="confirm-hosp-name" class="fw-semibold">Hospital Name</span>.</p>
+                    
+
+                    
+                    <div class="alert alert-info py-2 px-3 mb-0" style="font-size: 0.85rem; border-radius: 8px;">
+                        <i class="fas fa-info-circle me-1"></i> Generating a token will register your position in the live queue.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-3 pt-0">
+                    <button type="button" class="btn btn-secondary px-4 py-2 border-0" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600; background: #e2e8f0; color: #475569;">Cancel</button>
+                    <button type="button" class="btn btn-primary px-4 py-2 border-0" id="btnConfirmQueue" style="border-radius: 10px; font-weight: 600; background: var(--primary);">Confirm & Generate</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user'));
@@ -145,6 +970,23 @@
 
         document.getElementById('userName').textContent = user.name;
         document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+        if (document.getElementById('bannerUserName')) {
+            document.getElementById('bannerUserName').textContent = user.name;
+        }
+
+        let allDoctors = [];
+        let allHospitals = [];
+        let selectedHospital = null;
+        let selectedDepartment = '';
+        let selectedTokenDepartment = '';
+        let selectedDoctor = null;
+        let selectedDocForToken = null;
+        let activeTokenInfo = null;
+        let tokenFilteredDoctors = [];
+        
+        let detailsModal = null;
+        let queueConfirmModal = null;
+        let queuePollingInterval = null;
 
         function updateTime() {
             const now = new Date();
@@ -152,26 +994,401 @@
             document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
         }
 
-        function logout() {
+        async function logout() {
+            try {
+                await fetch('/logout', { method: 'POST' });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
             localStorage.clear();
             window.location.href = 'index.html';
         }
 
+        // Single page tab switching
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        const cards = document.querySelectorAll('.grid-container .card');
+
+        function switchTab(targetId) {
+            if (!targetId || !targetId.startsWith('#')) return;
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === targetId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            cards.forEach(card => {
+                if ('#' + card.id === targetId) {
+                    card.style.display = 'block';
+                    if (card.id === 'book' || card.id === 'queue' || card.id === 'my-appointments' || card.id === 'my-tokens' || card.id === 'my-reviews' || card.id === 'my-notifications' || card.id === 'profile' || card.id === 'my-consultations' || card.id === 'my-prescriptions' || card.id === 'my-followups') {
+                        card.style.gridColumn = '1 / -1'; // Span full width
+                    } else {
+                        card.style.gridColumn = 'auto';
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Trigger fresh data loading on tab switch
+            if (targetId === '#overview') {
+                loadOverview();
+            } else if (targetId === '#queue') {
+                checkActiveQueue();
+            } else if (targetId === '#my-appointments') {
+                loadAppointments();
+            } else if (targetId === '#my-tokens') {
+                loadTokens();
+            } else if (targetId === '#my-reviews') {
+                loadReviews();
+            } else if (targetId === '#my-notifications') {
+                loadNotifications();
+            } else if (targetId === '#profile') {
+                loadProfile();
+            } else if (targetId === '#my-consultations') {
+                loadConsultations();
+            } else if (targetId === '#my-prescriptions') {
+                loadPrescriptions();
+            } else if (targetId === '#my-followups') {
+                loadFollowups();
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    switchTab(targetId);
+                    window.location.hash = targetId;
+                }
+            });
+        });
+
+        // Dynamic patient loader functions
+        async function loadOverview() {
+            try {
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userInitial').textContent = user.name.charAt(0).toUpperCase();
+                if (document.getElementById('bannerUserName')) {
+                    document.getElementById('bannerUserName').textContent = user.name;
+                }
+
+                // Check queue status
+                const resQ = await fetch('/queue-status', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (resQ.ok) {
+                    const dataQ = await resQ.json();
+                    const overviewQueueToken = document.getElementById('overviewQueueToken');
+                    if (overviewQueueToken) {
+                        if (dataQ.token) {
+                            overviewQueueToken.innerHTML = `Token: <strong>${dataQ.token}</strong> (Pos: ${dataQ.position}, ${dataQ.waitTime} min)`;
+                        } else {
+                            overviewQueueToken.textContent = 'Not in Queue';
+                        }
+                    }
+                }
+
+                // Check appointments
+                const resA = await fetch('/my-appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (resA.ok) {
+                    const appts = await resA.json();
+                    const activeAppt = appts.find(a => a.status === 'scheduled');
+                    const overviewNextAppt = document.getElementById('overviewNextAppt');
+                    if (overviewNextAppt) {
+                        if (activeAppt) {
+                            const dateStr = new Date(activeAppt.appointment_date).toLocaleString('en-US', {
+                                weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            });
+                            overviewNextAppt.innerHTML = `<strong>${activeAppt.doctor_name}</strong><br><span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);"><i class="fas fa-clock"></i> ${dateStr}</span>`;
+                        } else {
+                            overviewNextAppt.textContent = 'None Scheduled';
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading overview data:', err);
+            }
+        }
+
+        async function loadAppointments() {
+            const list = document.getElementById('myAppointmentsList');
+            list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading appointments...</td></tr>';
+            try {
+                const res = await fetch('/my-appointments', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.length === 0) {
+                        list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-calendar-times me-2"></i>No appointments found.</td></tr>';
+                    } else {
+                        list.innerHTML = data.map(a => {
+                            const dateStr = new Date(a.appointment_date).toLocaleString();
+                            let statusBadge = '';
+                            if (a.status === 'scheduled') {
+                                statusBadge = '<span class="badge bg-primary">Scheduled</span>';
+                            } else if (a.status === 'completed') {
+                                statusBadge = '<span class="badge bg-success">Completed</span>';
+                            } else {
+                                statusBadge = `<span class="badge bg-secondary">${a.status}</span>`;
+                            }
+                            return `
+                                <tr>
+                                    <td class="fw-bold">${a.doctor_name}</td>
+                                    <td><span class="badge bg-info-subtle text-info border border-info-subtle">${a.specialty}</span></td>
+                                    <td>${a.hospital_name}</td>
+                                    <td><i class="far fa-clock text-muted me-1"></i>${dateStr}</td>
+                                    <td>${statusBadge}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    list.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Failed to load appointments: ${data.error || 'Server error'}</td></tr>`;
+                }
+            } catch (err) {
+                list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error.</td></tr>';
+            }
+        }
+
+        async function loadTokens() {
+            const list = document.getElementById('myTokensList');
+            list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading tokens...</td></tr>';
+            try {
+                const res = await fetch('/my-tokens', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.length === 0) {
+                        list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-ticket-alt me-2"></i>No generated tokens found.</td></tr>';
+                    } else {
+                        list.innerHTML = data.map(t => {
+                            const dateStr = new Date(t.entered_at).toLocaleString();
+                            let statusBadge = '';
+                            if (t.queue_status === 'waiting') {
+                                statusBadge = `<span class="badge bg-warning text-dark">Waiting (Pos: ${t.position})</span>`;
+                            } else if (t.queue_status === 'active') {
+                                statusBadge = '<span class="badge bg-success">In Progress</span>';
+                            } else if (t.queue_status === 'completed') {
+                                statusBadge = '<span class="badge bg-secondary">Completed</span>';
+                            } else {
+                                statusBadge = `<span class="badge bg-dark">${t.queue_status}</span>`;
+                            }
+                            return `
+                                <tr>
+                                    <td class="fw-extrabold text-primary fs-5">Token ${t.token_number}</td>
+                                    <td class="fw-bold">${t.doctor_name}</td>
+                                    <td>${t.hospital_name}</td>
+                                    <td>${dateStr}</td>
+                                    <td>${statusBadge}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    list.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Failed to load tokens: ${data.error || 'Server error'}</td></tr>`;
+                }
+            } catch (err) {
+                list.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error.</td></tr>';
+            }
+        }
+
+        async function loadReviews() {
+            const list = document.getElementById('myReviewsList');
+            list.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading reviews...</div>';
+            try {
+                const res = await fetch('/my-reviews', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                populateReviewDoctors();
+                if (res.ok) {
+                    if (data.length === 0) {
+                        list.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-comment-slash me-2"></i>You have not submitted any reviews yet.</div>';
+                    } else {
+                        list.innerHTML = data.map(r => `
+                            <div class="p-3 rounded-3 border bg-white shadow-sm position-relative">
+                                <button onclick="deleteReview(${r.review_id})" class="btn btn-sm btn-outline-danger position-absolute" style="top: 15px; right: 15px; border-radius: 50%; width: 32px; height: 32px; padding: 0;" title="Delete review"><i class="fas fa-trash"></i></button>
+                                <h6 class="fw-bold text-dark m-0">${r.doctor_name}</h6>
+                                <small class="text-muted">${r.specialty} • Reviewed on ${r.review_date}</small>
+                                <div class="rating-stars my-2">${getStarsHTML(r.rating)}</div>
+                                <p class="text-muted m-0" style="font-size: 0.9rem;">"${r.comment || 'No comment provided.'}"</p>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    list.innerHTML = `<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Failed to load reviews.</div>`;
+                }
+            } catch (err) {
+                list.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error.</div>';
+            }
+        }
+
+        function populateReviewDoctors() {
+            const select = document.getElementById('reviewDocSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Choose a doctor...</option>' + allDoctors.map(d => `
+                    <option value="${d.id}">${d.name} (${d.specialty})</option>
+                `).join('');
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (confirm('Are you sure you want to delete this review?')) {
+                try {
+                    const res = await fetch(`/my-reviews/${reviewId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        loadReviews();
+                        loadDoctors();
+                    } else {
+                        const result = await res.json();
+                        alert(result.error || 'Failed to delete review');
+                    }
+                } catch (err) {
+                    alert('Connection error');
+                }
+            }
+        }
+
+        async function loadNotifications() {
+            const list = document.getElementById('myNotificationsList');
+            list.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading notifications...</div>';
+            try {
+                const res = await fetch('/my-notifications', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.length === 0) {
+                        list.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-bell-slash me-2"></i>No notifications.</div>';
+                    } else {
+                        list.innerHTML = data.map(n => {
+                            const dateStr = new Date(n.created_at).toLocaleString();
+                            const unreadStyle = n.status === 'unread' ? 'border-primary bg-primary-subtle' : '';
+                            return `
+                                <div class="p-3 rounded-3 border d-flex justify-content-between align-items-center ${unreadStyle}" style="transition: all 0.3s;">
+                                    <div>
+                                        <p class="m-0 text-dark fw-semibold" style="font-size: 0.95rem;">${n.message}</p>
+                                        <small class="text-muted" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>${dateStr}</small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        ${n.status === 'unread' ? `<button onclick="markNotificationRead(${n.notification_id})" class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size:0.75rem;"><i class="fas fa-check me-1"></i>Read</button>` : ''}
+                                        <button onclick="dismissNotification(${n.notification_id})" class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size:0.75rem;"><i class="fas fa-trash-alt me-1"></i>Dismiss</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    list.innerHTML = '<div class="text-center py-4 text-danger">Failed to load notifications.</div>';
+                }
+            } catch (err) {
+                list.innerHTML = '<div class="text-center py-4 text-danger">Network error.</div>';
+            }
+        }
+
+        async function markNotificationRead(notifId) {
+            try {
+                await fetch(`/my-notifications/${notifId}/read`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                loadNotifications();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function dismissNotification(notifId) {
+            try {
+                await fetch(`/my-notifications/${notifId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                loadNotifications();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch('/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('profileName').value = data.name || '';
+                    document.getElementById('profileEmail').value = data.email || '';
+                    document.getElementById('profilePhone').value = data.phone || '';
+                }
+            } catch (err) {
+                console.error('Error loading profile Settings:', err);
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    switchTab(targetId);
+                    window.location.hash = targetId;
+                }
+            });
+        });
+
+        // Booking Stepper Navigation
+        function goToStep(stepNum) {
+            for (let i = 1; i <= 4; i++) {
+                const stepIndicator = document.getElementById(`step-indicator-${i}`);
+                if (stepIndicator) {
+                    if (i < stepNum) stepIndicator.className = 'step completed';
+                    else if (i === stepNum) stepIndicator.className = 'step active';
+                    else stepIndicator.className = 'step';
+                }
+                
+                const stepLine = document.getElementById(`step-line-${i}`);
+                if (stepLine) {
+                    if (i < stepNum) stepLine.className = 'step-line active';
+                    else stepLine.className = 'step-line';
+                }
+            }
+            
+            for (let i = 1; i <= 4; i++) {
+                const pane = document.getElementById(`booking-step-${i}`);
+                if (pane) {
+                    pane.style.display = (i === stepNum) ? 'block' : 'none';
+                }
+            }
+        }
+
+        // Booking Department Selection
+        function selectDepartment(deptName, iconClass) {
+            selectedDepartment = deptName;
+            document.getElementById('selected-dept-name').textContent = deptName;
+            document.getElementById('selected-dept-icon').className = `fas ${iconClass}`;
+            goToStep(2);
+            filterDoctors();
+        }
+
+        // Fetch Doctors & Cache
         async function loadDoctors() {
             try {
                 const res = await fetch('/doctors');
                 const doctors = await res.json();
-                const selects = ['doctorSelect', 'queueDoctorSelect'];
-                selects.forEach(id => {
-                    const select = document.getElementById(id);
-                    select.innerHTML = '<option value="">Select a doctor...</option>' + 
-                        doctors.map(d => `<option value="${d.id}">${d.name} - ${d.specialty}</option>`).join('');
-                });
+                allDoctors = doctors;
+                
+                // Render list in Available Doctors card
                 document.getElementById('doctorList').innerHTML = doctors.map(d => `
-                    <div class="doctor-card">
-                        <div>
-                            <h6><i class="fas fa-user-md"></i> ${d.name}</h6>
-                            <p class="doctor-specialty">${d.specialty}</p>
+                    <div class="doctor-card" style="cursor: pointer;" onclick="switchTab('#book'); selectDepartment('${d.specialty}', 'fa-stethoscope')">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="${d.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300'}" alt="${d.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                            <div>
+                                <h6 class="m-0"><i class="fas fa-user-md text-primary"></i> ${d.name}</h6>
+                                <p class="doctor-specialty m-0">${d.specialty} • ${d.qualification || 'MBBS'}</p>
+                                <small class="text-muted"><i class="fas fa-hospital text-primary"></i> ${d.hospital_name || 'MediCare'}</small>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="rating-stars">${getStarsHTML(d.rating)}</div>
+                            <span class="fw-bold" style="font-size: 0.9rem;">${d.rating.toFixed(1)} <span class="text-muted fw-normal">(${d.total_reviews})</span></span>
                         </div>
                     </div>
                 `).join('');
@@ -180,63 +1397,1272 @@
             }
         }
 
-        document.getElementById('bookForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                doctorId: document.getElementById('doctorSelect').value,
-                dateTime: document.getElementById('dateTime').value
-            };
-            const res = await fetch('/book-appointment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(data)
+        // Filtering and Sorting logic for Booking section
+        function filterDoctors() {
+            const query = document.getElementById('doctorSearch').value.toLowerCase().trim();
+            const sortBy = document.getElementById('doctorSort').value;
+            
+            let filtered = allDoctors.filter(d => {
+                const matchesDept = !selectedDepartment || d.specialty === selectedDepartment;
+                const matchesName = !query || d.name.toLowerCase().includes(query);
+                return matchesDept && matchesName;
             });
-            const result = await res.json();
-            const msg = document.getElementById('bookMessage');
-            if (res.ok) {
-                msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + '</div>';
-                document.getElementById('bookForm').reset();
-            } else {
-                msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Booking failed') + '</div>';
+            
+            if (sortBy === 'recommended') {
+                filtered.forEach(d => {
+                    d.recScore = calculateRecommendationScore(d);
+                });
+                filtered.sort((a, b) => b.recScore - a.recScore);
+            } else if (sortBy === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            } else if (sortBy === 'experience') {
+                filtered.sort((a, b) => b.experience_years - a.experience_years);
+            } else if (sortBy === 'fee') {
+                filtered.sort((a, b) => a.consultation_fee - b.consultation_fee);
+            } else if (sortBy === 'earliest') {
+                filtered.sort((a, b) => getEarliestAvailableScore(a) - getEarliestAvailableScore(b));
             }
-        });
+            
+            renderDoctorCards(filtered);
+        }
 
-        document.getElementById('queueForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                doctorId: document.getElementById('queueDoctorSelect').value,
-                emergency: document.getElementById('emergency').checked
-            };
-            const res = await fetch('/join-queue', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(data)
-            });
-            const result = await res.json();
-            const msg = document.getElementById('queueMessage');
-            if (res.ok) {
-                msg.innerHTML = '<div class="success-message"><i class="fas fa-check-circle"></i> ' + result.message + (result.token ? ` - Token: <strong>${result.token}</strong>` : '') + '</div>';
-                document.getElementById('queueForm').reset();
-            } else {
-                msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Failed to join queue') + '</div>';
+        // Recommendation Score calculation
+        function calculateRecommendationScore(doctor) {
+            const ratingScore = (doctor.rating || 0) * 10; // Out of 50
+            const reviewsScore = Math.min((doctor.total_reviews || 0) * 1.5, 20); // Out of 20
+            const experienceScore = Math.min((doctor.experience_years || 0) * 1.0, 20); // Out of 20
+            const earliestTime = getEarliestAvailableScore(doctor); // Minutes from midnight
+            const availabilityScore = Math.max(0, 10 - (earliestTime / 180)); // Out of 10
+            return ratingScore + reviewsScore + experienceScore + availabilityScore;
+        }
+
+        // Earliest Daily Availability scoring
+        function getEarliestAvailableScore(doctor) {
+            const timing = doctor.available_timing || "09:00 AM";
+            const startPart = timing.split('-')[0].trim();
+            const match = startPart.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!match) return 540; // Default to 9:00 AM (540 mins)
+            let hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const ampm = match[3].toUpperCase();
+            if (ampm === 'PM' && hours < 12) hours += 12;
+            if (ampm === 'AM' && hours === 12) hours = 0;
+            return hours * 60 + minutes;
+        }
+
+        // Star rating generator
+        function getStarsHTML(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+            const emptyStars = 5 - fullStars - halfStar;
+            let html = '';
+            for (let i = 0; i < fullStars; i++) html += '<i class="fas fa-star text-warning"></i>';
+            if (halfStar) html += '<i class="fas fa-star-half-alt text-warning"></i>';
+            for (let i = 0; i < emptyStars; i++) html += '<i class="far fa-star text-warning"></i>';
+            return html;
+        }
+
+        // Render Doctors Deck in Booking tab
+        function renderDoctorCards(doctorsList) {
+            const container = document.getElementById('bookingDoctorList');
+            if (doctorsList.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5 text-muted" style="grid-column: 1 / -1;">
+                        <i class="fas fa-user-slash fa-3x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                        <h5 class="fw-bold">No Doctors Found</h5>
+                        <p>No available practitioners matched your query in this department.</p>
+                    </div>
+                `;
+                return;
             }
-        });
+            
+            container.innerHTML = doctorsList.map((d, index) => {
+                let badgeHTML = '';
+                if (index === 0 && d.rating >= 4.5 && d.total_reviews >= 3) {
+                    badgeHTML = '<span class="doc-badge-premium"><i class="fas fa-thumbs-up"></i> Recommended</span>';
+                } else if (d.rating >= 4.8) {
+                    badgeHTML = '<span class="doc-badge-premium" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fas fa-star"></i> Top Rated</span>';
+                }
+                
+                return `
+                    <div class="doc-card-premium">
+                        <div class="doc-card-header">
+                            ${badgeHTML}
+                            <div class="doc-avatar-container">
+                                <img src="${d.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300'}" alt="${d.name}" class="doc-avatar-img">
+                            </div>
+                            <div class="doc-card-info">
+                                <h5>${d.name}</h5>
+                                <span class="doc-specialty-badge">${d.specialty}</span>
+                                <div class="doc-meta-item"><i class="fas fa-graduation-cap"></i> ${d.qualification || 'MBBS, MD'}</div>
+                                <div class="doc-meta-item"><i class="fas fa-briefcase"></i> ${d.experience_years} Years Experience</div>
+                                <div class="doc-meta-item"><i class="fas fa-clock"></i> ${d.available_timing}</div>
+                                <div class="doc-meta-item"><i class="fas fa-hospital"></i> ${d.hospital_name || 'MediCare Hospital'}</div>
+                                <div class="doc-rating-box">
+                                    <div class="rating-stars">${getStarsHTML(d.rating)}</div>
+                                    <span class="rating-val">${d.rating ? d.rating.toFixed(1) : 'N/A'}</span>
+                                    <span class="review-count">(${d.total_reviews} reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="doc-card-footer">
+                            <div class="doc-fee-box">
+                                <span class="fee-label">Consultation Fee</span>
+                                <span class="fee-value">Rs. ${d.consultation_fee ? d.consultation_fee.toLocaleString() : '800'}</span>
+                            </div>
+                            <div class="doc-card-actions">
+                                <button type="button" class="btn-card-reviews" title="View Reviews & Details" onclick="viewReviews(${d.id})">
+                                    <i class="fas fa-comment-dots"></i>
+                                </button>
+                                <button type="button" class="btn-card-book" onclick="startBooking(${d.id})">
+                                    Book
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-        async function updateStatus() {
+        // View Doctor Reviews & Hospital Details Modal (Applies to both Booking and Token Generator)
+        async function viewReviews(docId) {
+            const doctor = allDoctors.find(d => d.id == docId);
+            if (!doctor) return;
+            
+            selectedDoctor = doctor;
+            
+            document.getElementById('modalDocName').textContent = doctor.name;
+            document.getElementById('modalDocPic').src = doctor.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300';
+            document.getElementById('modalDocSpecialty').textContent = doctor.specialty;
+            document.getElementById('modalDocQualification').textContent = doctor.qualification || 'MBBS, MD';
+            
+            const starsContainer = document.getElementById('modalDocRating');
+            starsContainer.innerHTML = getStarsHTML(doctor.rating);
+            document.getElementById('modalDocReviewsCount').textContent = `(${doctor.rating.toFixed(1)} / 5 from ${doctor.total_reviews} reviews)`;
+            document.getElementById('modalReviewsTabCount').textContent = doctor.total_reviews;
+            
+            document.getElementById('modalHospitalName').textContent = doctor.hospital_name || 'Associated Hospital';
+            document.getElementById('modalHospitalAddress').innerHTML = `<i class="fas fa-map-marker-alt text-danger"></i> ${doctor.hospital_address || 'Clinic Address'}`;
+            document.getElementById('modalHospitalRating').textContent = doctor.hospital_rating ? doctor.hospital_rating.toFixed(1) : '4.5';
+            
+            const emergencyBadge = document.getElementById('facilityEmergency');
+            const pharmacyBadge = document.getElementById('facilityPharmacy');
+            const labBadge = document.getElementById('facilityLaboratory');
+            
+            toggleFacilityStatus(emergencyBadge, doctor.hospital_emergency);
+            toggleFacilityStatus(pharmacyBadge, doctor.hospital_pharmacy);
+            toggleFacilityStatus(labBadge, doctor.hospital_laboratory);
+            
+            // Fetch Doctor Reviews
+            const reviewsContainer = document.getElementById('modalReviewsList');
+            reviewsContainer.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2">Loading reviews...</p></div>';
+            
+            // Fetch Hospital Reviews
+            const hospReviewsContainer = document.getElementById('modalHospitalReviewsList');
+            const hospRatingBreakdown = document.getElementById('hospital-rating-breakdown');
+            hospReviewsContainer.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2">Loading hospital reviews...</p></div>';
+            hospRatingBreakdown.style.display = 'none';
+
+            // Activate first tab (Hospital Info) by default on open
+            const triggerEl = document.querySelector('#hospital-tab');
+            if (triggerEl) {
+                const tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            }
+
             try {
-                const res = await fetch('/queue-status', { headers: { 'Authorization': `Bearer ${token}` } });
-                const status = await res.json();
-                document.getElementById('position').textContent = status.position || 'Not in queue';
-                document.getElementById('wait').textContent = status.waitTime ? `${status.waitTime} min` : 'N/A';
+                const res = await fetch(`/doctors/${docId}/reviews`);
+                const reviews = await res.json();
+                
+                if (reviews && reviews.length > 0) {
+                    reviewsContainer.innerHTML = reviews.map(r => `
+                        <div class="review-item-modal">
+                            <div class="review-header-modal">
+                                <span class="reviewer-name-modal">${r.reviewer_name}</span>
+                                <span class="review-date-modal">${r.review_date}</span>
+                            </div>
+                            <div class="rating-stars mb-2">${getStarsHTML(r.rating)}</div>
+                            <p class="review-comment-modal">"${r.comment || 'No comment provided.'}"</p>
+                        </div>
+                    `).join('');
+                } else {
+                    reviewsContainer.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-comment-slash fa-2x"></i><p class="mt-2">No reviews available for this doctor yet.</p></div>';
+                }
             } catch (err) {
-                console.error('Error updating status:', err);
+                reviewsContainer.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle fa-2x"></i><p class="mt-2">Failed to load reviews.</p></div>';
+            }
+
+            try {
+                const hospRes = await fetch(`/hospitals/${encodeURIComponent(doctor.hospital_name)}/reviews`);
+                const hospReviews = await hospRes.json();
+                
+                if (hospReviews && hospReviews.length > 0) {
+                    hospReviewsContainer.innerHTML = hospReviews.map(r => `
+                        <div class="review-item-modal">
+                            <div class="review-header-modal">
+                                <span class="reviewer-name-modal">${r.reviewer_name}</span>
+                                <span class="review-date-modal">${r.review_date}</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="rating-stars">${getStarsHTML(r.rating)}</div>
+                                <span class="fw-bold" style="font-size: 0.85rem;">${r.rating.toFixed(1)}</span>
+                            </div>
+                            <p class="review-comment-modal">"${r.feedback || 'No comment provided.'}"</p>
+                        </div>
+                    `).join('');
+
+                    // Calculate averages for ratings breakdown
+                    let sumEmerg = 0, sumStaff = 0, sumClean = 0, sumOverall = 0;
+                    hospReviews.forEach(r => {
+                        sumEmerg += r.emergency_service_rating || r.rating;
+                        sumStaff += r.staff_behavior_rating || r.rating;
+                        sumClean += r.cleanliness_rating || r.rating;
+                        sumOverall += r.overall_experience_rating || r.rating;
+                    });
+                    const avgEmerg = sumEmerg / hospReviews.length;
+                    const avgStaff = sumStaff / hospReviews.length;
+                    const avgClean = sumClean / hospReviews.length;
+                    const avgOverall = sumOverall / hospReviews.length;
+
+                    document.getElementById('lbl-hosp-emerg-rating').textContent = avgEmerg.toFixed(1);
+                    document.getElementById('lbl-hosp-staff-rating').textContent = avgStaff.toFixed(1);
+                    document.getElementById('lbl-hosp-clean-rating').textContent = avgClean.toFixed(1);
+                    document.getElementById('lbl-hosp-overall-rating').textContent = avgOverall.toFixed(1);
+
+                    document.getElementById('pb-hosp-emerg').style.width = `${avgEmerg * 20}%`;
+                    document.getElementById('pb-hosp-staff').style.width = `${avgStaff * 20}%`;
+                    document.getElementById('pb-hosp-clean').style.width = `${avgClean * 20}%`;
+                    document.getElementById('pb-hosp-overall').style.width = `${avgOverall * 20}%`;
+
+                    hospRatingBreakdown.style.display = 'block';
+                } else {
+                    hospReviewsContainer.innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-comment-slash fa-2x"></i><p class="mt-2">No reviews available for this hospital yet.</p></div>';
+                }
+            } catch (err) {
+                hospReviewsContainer.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle fa-2x"></i><p class="mt-2">Failed to load hospital reviews.</p></div>';
+            }
+            
+            document.getElementById('btnModalBook').onclick = () => {
+                detailsModal.hide();
+                startBooking(doctor.id);
+            };
+            
+            detailsModal.show();
+        }
+
+        function toggleFacilityStatus(badgeElement, isAvailable) {
+            const statusText = badgeElement.querySelector('.facility-status');
+            if (isAvailable === 1 || isAvailable === true) {
+                badgeElement.style.opacity = '1';
+                statusText.textContent = 'Available';
+                statusText.className = 'facility-status text-success';
+            } else {
+                badgeElement.style.opacity = '0.6';
+                statusText.textContent = 'Unavailable';
+                statusText.className = 'facility-status text-danger';
             }
         }
 
+        // Start Booking Wizard (Step 3)
+        function startBooking(docId) {
+            const doctor = allDoctors.find(d => d.id == docId);
+            if (!doctor) return;
+            
+            selectedDoctor = doctor;
+            
+            document.getElementById('summaryDocPic').src = doctor.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300';
+            document.getElementById('summaryDocName').textContent = doctor.name;
+            document.getElementById('summaryDocSpecialty').textContent = doctor.specialty;
+            document.getElementById('summaryDocHospital').innerHTML = `<i class="fas fa-hospital text-primary"></i> ${doctor.hospital_name || 'MediCare Hospital'}`;
+            document.getElementById('summaryDocFee').textContent = `Rs. ${doctor.consultation_fee ? doctor.consultation_fee.toLocaleString() : '800'}`;
+            document.getElementById('summaryDocTiming').textContent = doctor.available_timing;
+            
+            goToStep(3);
+        }
+
+        // Submit Booking Form
+        document.getElementById('enhancedBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!selectedDoctor) return;
+            
+            const dateTimeVal = document.getElementById('enhancedDateTime').value;
+            const data = {
+                doctorId: selectedDoctor.id,
+                dateTime: dateTimeVal
+            };
+            
+            const msg = document.getElementById('enhancedBookMessage');
+            msg.innerHTML = '<div class="text-center py-2 text-muted"><i class="fas fa-spinner fa-spin"></i> Processing booking request...</div>';
+            
+            try {
+                const res = await fetch('/book-appointment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (res.ok) {
+                    msg.innerHTML = '';
+                    
+                    document.getElementById('receiptDoc').textContent = selectedDoctor.name;
+                    document.getElementById('receiptHospital').textContent = selectedDoctor.hospital_name || 'MediCare Hospital';
+                    document.getElementById('receiptFee').textContent = `Rs. ${selectedDoctor.consultation_fee ? selectedDoctor.consultation_fee.toLocaleString() : '800'}`;
+                    
+                    const dateObj = new Date(dateTimeVal);
+                    const formattedDate = dateObj.toLocaleDateString('en-US', {
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                    document.getElementById('receiptTime').textContent = formattedDate;
+                    
+                    const overviewNextAppt = document.getElementById('overviewNextAppt');
+                    if (overviewNextAppt) {
+                        overviewNextAppt.innerHTML = `<strong>${selectedDoctor.name}</strong><br><span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);"><i class="fas fa-clock"></i> ${formattedDate}</span>`;
+                    }
+                    
+                    goToStep(4);
+                    document.getElementById('enhancedBookForm').reset();
+                } else {
+                    msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> ' + (result.error || 'Booking failed') + '</div>';
+                }
+            } catch (err) {
+                msg.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Booking error: ' + err.message + '</div>';
+            }
+        });
+
+
+        // --- Token & Live Queue Wizard Logic ---
+        
+        function goTokenStep(stepNum) {
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`token-step-indicator-${i}`);
+                if (indicator) {
+                    if (i < stepNum) indicator.className = 'step completed';
+                    else if (i === stepNum) indicator.className = 'step active';
+                    else indicator.className = 'step';
+                }
+                
+                const line = document.getElementById(`token-step-line-${i}`);
+                if (line) {
+                    if (i < stepNum) line.className = 'step-line active';
+                    else line.className = 'step-line';
+                }
+            }
+            
+            for (let i = 1; i <= 4; i++) {
+                const pane = document.getElementById(`token-step-pane-${i}`);
+                if (pane) {
+                    pane.style.display = (i === stepNum) ? 'block' : 'none';
+                }
+            }
+        }
+
+        // Fetch unique Hospitals for Step 1
+        async function loadHospitals() {
+            try {
+                const res = await fetch('/hospitals');
+                const hospitals = await res.json();
+                allHospitals = hospitals;
+                
+                const listContainer = document.getElementById('hospital-list');
+                if (hospitals.length === 0) {
+                    listContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted"><p>No partnered hospitals available at the moment.</p></div>';
+                    return;
+                }
+                
+                listContainer.innerHTML = hospitals.map(h => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="p-4 rounded-4 border bg-white shadow-sm h-100 d-flex flex-column justify-content-between transition-all" style="cursor: pointer; border-color: var(--border-color);" onclick="selectHospital('${h.hospital_name.replace(/'/g, "\\'")}')">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="fw-bold text-dark m-0" style="font-size: 1.15rem; line-height: 1.3;">${h.hospital_name}</h5>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 0.85rem;"><i class="fas fa-star me-1"></i>${h.hospital_rating.toFixed(1)}</span>
+                                </div>
+                                <p class="text-muted mb-4" style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><i class="fas fa-map-marker-alt text-danger me-1"></i> ${h.hospital_address}</p>
+                            </div>
+                            <div>
+                                <div class="d-flex gap-2 mb-3">
+                                    ${h.hospital_emergency ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.75rem;"><i class="fas fa-ambulance me-1"></i>24/7 ER</span>' : ''}
+                                    ${h.hospital_pharmacy ? '<span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.75rem;"><i class="fas fa-prescription-bottle-alt me-1"></i>Pharmacy</span>' : ''}
+                                    ${h.hospital_laboratory ? '<span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.75rem;"><i class="fas fa-flask me-1"></i>Lab</span>' : ''}
+                                </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm w-100 fw-bold py-2" style="border-radius: 8px; border-width: 2px;">Select Hospital</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading hospitals:', err);
+            }
+        }
+
+        // Handle Hospital Selection
+        async function selectHospital(hospitalName) {
+            selectedHospital = allHospitals.find(h => h.hospital_name === hospitalName);
+            document.getElementById('selected-hospital-name-dept').textContent = hospitalName;
+            
+            try {
+                const res = await fetch(`/hospitals/${encodeURIComponent(hospitalName)}/departments`);
+                const depts = await res.json();
+                
+                const deptsContainer = document.getElementById('hospital-departments-grid');
+                if (depts.length === 0) {
+                    deptsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted"><p>No departments available in this hospital.</p></div>';
+                } else {
+                    const deptIcons = {
+                        'Cardiology': 'fa-heartbeat',
+                        'Neurology': 'fa-brain',
+                        'Orthopedics': 'fa-bone',
+                        'Dermatology': 'fa-hand-holding-medical',
+                        'Gynecology': 'fa-female',
+                        'Pediatrics': 'fa-baby',
+                        'ENT': 'fa-headphones',
+                        'General Medicine': 'fa-stethoscope'
+                    };
+                    const deptColors = {
+                        'Cardiology': { bg: '#fef2f2', text: '#ef4444' },
+                        'Neurology': { bg: '#faf5ff', text: '#a855f7' },
+                        'Orthopedics': { bg: '#f0fdf4', text: '#22c55e' },
+                        'Dermatology': { bg: '#fff7ed', text: '#f97316' },
+                        'Gynecology': { bg: '#fdf2f8', text: '#ec4899' },
+                        'Pediatrics': { bg: '#f0f9ff', text: '#0ea5e9' },
+                        'ENT': { bg: '#f5f5f4', text: '#78716c' },
+                        'General Medicine': { bg: '#ecfeff', text: '#06b6d4' }
+                    };
+                    
+                    deptsContainer.innerHTML = depts.map(d => {
+                        const icon = deptIcons[d] || 'fa-stethoscope';
+                        const color = deptColors[d] || { bg: '#f0fdfa', text: '#14b8a6' };
+                        return `
+                            <div class="dept-card" onclick="selectTokenDepartment('${d}')">
+                                <div class="dept-icon" style="background: ${color.bg}; color: ${color.text};"><i class="fas ${icon}"></i></div>
+                                <h5>${d}</h5>
+                                <p>Specialized patient care in ${d}</p>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
+                goTokenStep(2);
+            } catch (err) {
+                console.error('Error loading departments:', err);
+            }
+        }
+
+        // Handle Department Selection
+        function selectTokenDepartment(deptName) {
+            selectedTokenDepartment = deptName;
+            document.getElementById('selected-dept-name-doc').textContent = `${selectedHospital.hospital_name} • ${deptName}`;
+            goTokenStep(3);
+            filterTokenDoctors();
+        }
+
+        // Filtering & Sorting logic for Token generation doctor screen
+        async function filterTokenDoctors() {
+            const query = document.getElementById('tokenDocSearch').value.toLowerCase().trim();
+            const sortBy = document.getElementById('tokenDocSort').value;
+            
+            try {
+                const res = await fetch(`/doctors?hospital=${encodeURIComponent(selectedHospital.hospital_name)}&department=${encodeURIComponent(selectedTokenDepartment)}`);
+                let doctors = await res.json();
+                
+                if (query) {
+                    doctors = doctors.filter(d => d.name.toLowerCase().includes(query));
+                }
+                
+                if (sortBy === 'recommended') {
+                    doctors.forEach(d => {
+                        d.recScore = calculateRecommendationScore(d);
+                    });
+                    doctors.sort((a, b) => b.recScore - a.recScore);
+                } else if (sortBy === 'rating') {
+                    doctors.sort((a, b) => b.rating - a.rating);
+                } else if (sortBy === 'experience') {
+                    doctors.sort((a, b) => b.experience_years - a.experience_years);
+                } else if (sortBy === 'fee') {
+                    doctors.sort((a, b) => a.consultation_fee - b.consultation_fee);
+                } else if (sortBy === 'earliest') {
+                    doctors.sort((a, b) => getEarliestAvailableScore(a) - getEarliestAvailableScore(b));
+                }
+                
+                tokenFilteredDoctors = doctors;
+                renderTokenDoctors();
+            } catch (err) {
+                console.error('Error loading token doctors:', err);
+            }
+        }
+
+        // Render Doctor Cards for Token System (Spotlights recommended doctor at the top)
+        function renderTokenDoctors() {
+            const recContainer = document.getElementById('recommended-doctors-row');
+            const listContainer = document.getElementById('token-doctor-list');
+            
+            if (tokenFilteredDoctors.length === 0) {
+                recContainer.innerHTML = '';
+                listContainer.innerHTML = `
+                    <div class="col-12 text-center py-5 text-muted" style="grid-column: 1 / -1;">
+                        <i class="fas fa-user-slash fa-3x mb-3 text-secondary" style="opacity: 0.5;"></i>
+                        <h5 class="fw-bold">No Doctors Found</h5>
+                        <p>No available practitioners matched your query in this department.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortBy = document.getElementById('tokenDocSort').value;
+            if (sortBy === 'recommended' && tokenFilteredDoctors[0]) {
+                const recDoc = tokenFilteredDoctors[0];
+                recContainer.innerHTML = `
+                    <div class="col-12 mb-2">
+                        <div class="p-4 rounded-4 border bg-gradient-light shadow-sm" style="background: linear-gradient(135deg, rgba(236,254,255,0.4), rgba(240,253,250,0.4)); border-color: var(--primary-light) !important; position: relative; overflow: hidden;">
+                            <span class="badge bg-primary text-white position-absolute" style="top: 20px; right: 20px; font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;"><i class="fas fa-award me-1"></i> Highly Recommended</span>
+                            <div class="row align-items-center g-4">
+                                <div class="col-md-2 text-center text-md-start">
+                                    <img src="${recDoc.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300'}" alt="${recDoc.name}" class="rounded-4 img-fluid shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid white;">
+                                </div>
+                                <div class="col-md-7 mt-3 mt-md-0">
+                                    <h5 class="fw-extrabold text-dark mb-1" style="font-size: 1.3rem;">${recDoc.name}</h5>
+                                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">${recDoc.specialty}</span>
+                                        <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-graduation-cap text-primary me-1"></i> ${recDoc.qualification || 'MBBS'}</span>
+                                        <span class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-briefcase text-primary me-1"></i> ${recDoc.experience_years} Yrs Exp</span>
+                                    </div>
+                                    <p class="text-muted m-0 mb-1" style="font-size: 0.85rem;"><i class="fas fa-clock text-primary me-1"></i> Available Timing: <strong>${recDoc.available_timing}</strong></p>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rating-stars">${getStarsHTML(recDoc.rating)}</div>
+                                        <strong class="text-dark" style="font-size: 0.9rem;">${recDoc.rating.toFixed(1)}</strong>
+                                        <span class="text-muted" style="font-size: 0.85rem;">(${recDoc.total_reviews} patient reviews)</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-center text-md-end">
+                                    <div class="mb-3">
+                                        <span class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.75rem;">Consultation Fee</span>
+                                        <strong class="text-dark fs-4">Rs. ${recDoc.consultation_fee.toLocaleString()}</strong>
+                                    </div>
+                                    <div class="d-flex gap-2 justify-content-center justify-content-md-end">
+                                        <button type="button" class="btn btn-outline-primary border-2 fw-bold" onclick="viewReviews(${recDoc.id})" style="border-radius: 10px; padding: 10px 15px;"><i class="fas fa-comment-dots"></i> Reviews</button>
+                                        <button type="button" class="btn btn-primary fw-bold" onclick="generateTokenConfirm(${recDoc.id})" style="border-radius: 10px; padding: 10px 20px; background: var(--primary);">Get Token</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                recContainer.innerHTML = '';
+            }
+
+            let doctorsToRender = [...tokenFilteredDoctors];
+            if (sortBy === 'recommended' && doctorsToRender.length > 1) {
+                doctorsToRender.shift(); // Exclude recommendation spotlight from standard deck
+            }
+
+            listContainer.innerHTML = doctorsToRender.map(d => `
+                <div class="doc-card-premium">
+                    <div class="doc-card-header">
+                        <div class="doc-avatar-container">
+                            <img src="${d.profile_picture || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300'}" alt="${d.name}" class="doc-avatar-img">
+                        </div>
+                        <div class="doc-card-info">
+                            <h5>${d.name}</h5>
+                            <span class="doc-specialty-badge">${d.specialty}</span>
+                            <div class="doc-meta-item"><i class="fas fa-graduation-cap"></i> ${d.qualification || 'MBBS, MD'}</div>
+                            <div class="doc-meta-item"><i class="fas fa-briefcase"></i> ${d.experience_years} Years Experience</div>
+                            <div class="doc-meta-item"><i class="fas fa-clock"></i> ${d.available_timing}</div>
+                            <div class="doc-meta-item"><i class="fas fa-hospital"></i> ${d.hospital_name}</div>
+                            <div class="doc-rating-box">
+                                <div class="rating-stars">${getStarsHTML(d.rating)}</div>
+                                <span class="rating-val">${d.rating ? d.rating.toFixed(1) : '0.0'}</span>
+                                <span class="review-count">(${d.total_reviews} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doc-card-footer">
+                        <div class="doc-fee-box">
+                            <span class="fee-label">Consultation Fee</span>
+                            <span class="fee-value">Rs. ${d.consultation_fee ? d.consultation_fee.toLocaleString() : '800'}</span>
+                        </div>
+                        <div class="doc-card-actions">
+                            <button type="button" class="btn-card-reviews" title="View Reviews & Details" onclick="viewReviews(${d.id})">
+                                <i class="fas fa-comment-dots"></i>
+                            </button>
+                            <button type="button" class="btn-card-book" onclick="generateTokenConfirm(${d.id})" style="background: var(--primary);">
+                                Get Token
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Trigger visit token generation dialog
+        function generateTokenConfirm(docId) {
+            const doctor = allDoctors.find(d => d.id == docId);
+            if (!doctor) return;
+            
+            selectedDocForToken = doctor;
+            document.getElementById('confirm-doc-name').textContent = doctor.name;
+            document.getElementById('confirm-hosp-name').textContent = doctor.hospital_name;
+            
+            queueConfirmModal.show();
+        }
+
+        // Handle Visit Token Form Confirmation
+        document.getElementById('btnConfirmQueue').addEventListener('click', async () => {
+            if (!selectedDocForToken) return;
+            
+            const data = {
+                doctorId: selectedDocForToken.id,
+                emergency: false
+            };
+            
+            queueConfirmModal.hide();
+            
+            try {
+                const res = await fetch('/join-queue', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (res.ok) {
+                    document.getElementById('receipt-token-number').textContent = result.token;
+                    document.getElementById('receipt-token-doctor').textContent = result.doctorName;
+                    document.getElementById('receipt-token-hospital').textContent = result.hospitalName;
+                    document.getElementById('receipt-token-dept').textContent = result.department;
+                    document.getElementById('receipt-token-date').textContent = result.date;
+                    document.getElementById('receipt-token-time').textContent = result.time;
+                    document.getElementById('receipt-token-position').textContent = result.position;
+                    document.getElementById('receipt-token-wait').textContent = `${result.waitTime} Minutes`;
+                    
+                    document.getElementById('token-success-receipt').style.display = 'block';
+                    document.getElementById('live-queue-dashboard').style.display = 'none';
+                    
+                    goTokenStep(4);
+                    startQueueTracking(selectedDocForToken.id);
+                } else {
+                    alert(result.error || 'Failed to generate token');
+                }
+            } catch (err) {
+                alert('Error generating token: ' + err.message);
+            }
+        });
+
+        // Trigger Switch from Ticket Receipt to Dashboard
+        function showLiveTracking() {
+            document.getElementById('token-success-receipt').style.display = 'none';
+            document.getElementById('live-queue-dashboard').style.display = 'block';
+        }
+
+        // Start real-time queue synchronization
+        async function startQueueTracking(doctorId) {
+            if (queuePollingInterval) clearInterval(queuePollingInterval);
+            
+            async function updateTracking() {
+                try {
+                    const res = await fetch(`/doctors/${doctorId}/live-queue`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!res.ok) return;
+                    
+                    const data = await res.json();
+                    
+                    document.getElementById('board-active-token').textContent = data.currentActiveToken;
+                    document.getElementById('board-next-token').textContent = data.nextToken;
+                    document.getElementById('board-user-token').textContent = data.userToken;
+                    document.getElementById('board-patients-before').textContent = data.patientsBefore;
+                    document.getElementById('board-user-status-badge').textContent = data.userStatus;
+                    
+                    if (data.userStatus === 'In Progress') {
+                        document.getElementById('board-wait-time').textContent = 'Your Turn! Please enter.';
+                        document.getElementById('board-wait-box').className = 'p-3 rounded-3 border bg-success-subtle text-success-emphasis border-success-subtle';
+                    } else if (data.userStatus === 'Waiting') {
+                        document.getElementById('board-wait-time').textContent = `${data.waitTime} Minutes`;
+                        document.getElementById('board-wait-box').className = 'p-3 rounded-3 border bg-warning-subtle text-warning-emphasis border-warning-subtle';
+                    } else {
+                        document.getElementById('board-wait-time').textContent = 'N/A';
+                        document.getElementById('board-wait-box').className = 'p-3 rounded-3 border bg-light text-muted';
+                    }
+                    
+                    // Dashboard stats card updates
+                    const overviewQueueToken = document.getElementById('overviewQueueToken');
+                    if (overviewQueueToken) {
+                        if (data.userStatus === 'Waiting') {
+                            overviewQueueToken.innerHTML = `Token: <strong>${data.userToken}</strong> (Pos: ${data.userPosition}, ${data.waitTime} min)`;
+                        } else if (data.userStatus === 'In Progress') {
+                            overviewQueueToken.innerHTML = `Token: <strong>${data.userToken}</strong> (Active consultation)`;
+                        } else {
+                            overviewQueueToken.textContent = 'Not in Queue';
+                        }
+                    }
+
+                    // Progress calculations
+                    let percentage = 0;
+                    if (data.userStatus === 'In Progress') {
+                        percentage = 100;
+                    } else if (data.userStatus === 'Waiting') {
+                        const totalWaiting = data.queue.filter(q => q.status === 'waiting').length;
+                        percentage = Math.max(10, Math.min(95, Math.round(((totalWaiting - data.patientsBefore) / totalWaiting) * 100)));
+                    }
+                    document.getElementById('queue-progress-percentage').textContent = `${percentage}%`;
+                    document.getElementById('queue-progress-bar').style.width = `${percentage}%`;
+                    document.getElementById('queue-progress-bar').setAttribute('aria-valuenow', percentage);
+                    
+                    // Live Indicators
+                    const indicatorsContainer = document.getElementById('live-indicators-container');
+                    indicatorsContainer.innerHTML = '';
+                    
+                    if (data.userStatus === 'In Progress') {
+                        indicatorsContainer.innerHTML += `
+                            <span class="badge bg-success text-white py-2 px-3 border border-success w-100 text-center" style="font-size: 0.85rem; border-radius: 8px;">
+                                <i class="fas fa-user-clock me-1"></i> CURRENT IN CONSULTATION
+                            </span>
+                        `;
+                    }
+                    if (data.currentActiveToken === 'None' && data.nextToken === 'None') {
+                        indicatorsContainer.innerHTML += `
+                            <span class="badge bg-secondary text-white py-2 px-3 border w-100 text-center" style="font-size: 0.85rem; border-radius: 8px;">
+                                <i class="fas fa-user-slash me-1"></i> NO ACTIVE PATIENTS
+                            </span>
+                        `;
+                    }
+                    
+                    // Render Visualizer List
+                    const visualizerContainer = document.getElementById('board-queue-visualizer-list');
+                    if (data.queue.length === 0) {
+                        visualizerContainer.innerHTML = '<div class="text-center py-5 text-muted"><p>No patients in queue</p></div>';
+                    } else {
+                        visualizerContainer.innerHTML = data.queue.map(item => {
+                            let cardClass = 'border bg-light';
+                            let iconColor = 'text-muted';
+                            let statusText = 'Waiting';
+                            let pillClass = 'bg-secondary';
+                            
+                            if (item.status === 'active') {
+                                cardClass = 'border-primary bg-primary-subtle';
+                                iconColor = 'text-primary';
+                                statusText = 'In Progress';
+                                pillClass = 'bg-primary text-white';
+                            } else if (item.isUser) {
+                                cardClass = 'border-success bg-success-subtle';
+                                iconColor = 'text-success';
+                                statusText = 'You';
+                                pillClass = 'bg-success text-white';
+                            }
+                            
+                            return `
+                                <div class="p-3 rounded-3 d-flex justify-content-between align-items-center ${cardClass}" style="transition: all 0.3s;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-white border" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-ticket-alt ${iconColor}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Token ${item.token}</div>
+                                            <small class="text-muted" style="font-size: 0.8rem;">Status: ${statusText}</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge ${pillClass}" style="font-size: 0.75rem; padding: 5px 10px;">${statusText}</span>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+
+                    // Native Alert for turn check-in
+                    if (data.userPosition && data.userPosition <= 2 && data.userStatus === 'Waiting') {
+                        if (!activeTokenInfo || activeTokenInfo.notifiedPosition !== data.userPosition) {
+                            const alertMsg = `Get ready! Your queue position is ${data.userPosition}. Your turn is coming up very soon.`;
+                            if ("Notification" in window && Notification.permission === "granted") {
+                                new Notification('MediCare Alert', { body: alertMsg });
+                            } else {
+                                alert(alertMsg);
+                            }
+                        }
+                    }
+
+                    // If user is no longer in queue but was in queue, visit completed
+                    if (data.userStatus === 'Not in Queue' && activeTokenInfo && activeTokenInfo.token === data.userToken) {
+                        alert("Your visit consultation has been completed. Thank you for choosing MediCare!");
+                        activeTokenInfo = null;
+                        if (queuePollingInterval) clearInterval(queuePollingInterval);
+                        goTokenStep(1);
+                        loadHospitals();
+                    }
+                    
+                    // Track local token state
+                    if (data.userStatus !== 'Not in Queue') {
+                        activeTokenInfo = { doctorId, token: data.userToken, notifiedPosition: data.userPosition };
+                    } else {
+                        activeTokenInfo = null;
+                    }
+                } catch (err) {
+                    console.error('Error in tracking synchronization:', err);
+                }
+            }
+            
+            updateTracking();
+            queuePollingInterval = setInterval(updateTracking, 5000);
+        }
+
+        // Leave Live Queue cancellation
+        async function leaveQueue() {
+            if (!confirm('Are you sure you want to cancel your token and leave the live queue?')) return;
+            
+            try {
+                const res = await fetch('/leave-queue', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    if (queuePollingInterval) clearInterval(queuePollingInterval);
+                    activeTokenInfo = null;
+                    alert('You have cancelled your token and left the queue.');
+                    
+                    const overviewQueueToken = document.getElementById('overviewQueueToken');
+                    if (overviewQueueToken) overviewQueueToken.textContent = 'Not in Queue';
+                    
+                    goTokenStep(1);
+                    loadHospitals();
+                } else {
+                    alert(result.error || 'Failed to cancel token');
+                }
+            } catch (err) {
+                alert('Error leaving queue: ' + err.message);
+            }
+        }
+
+        // Patient-side grace period countdown
+        let patientGraceTimer = null;
+        const PATIENT_GRACE_MS = 5 * 60 * 1000;
+
+        function startPatientCountdown(calledAt) {
+            clearPatientCountdown();
+            const calledTime = new Date(calledAt).getTime();
+            function tick() {
+                const elapsed = Date.now() - calledTime;
+                const remaining = Math.max(0, Math.floor((PATIENT_GRACE_MS - elapsed) / 1000));
+                const chip = document.getElementById('patient-countdown-chip');
+                if (chip) {
+                    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+                    const s = (remaining % 60).toString().padStart(2, '0');
+                    chip.textContent = `⏱ ${m}:${s}`;
+                    if (remaining <= 60) {
+                        chip.style.background = '#fee2e2';
+                        chip.style.color = '#991b1b';
+                        chip.style.borderColor = '#fca5a5';
+                    }
+                }
+            }
+            tick();
+            patientGraceTimer = setInterval(tick, 1000);
+        }
+
+        function clearPatientCountdown() {
+            if (patientGraceTimer) {
+                clearInterval(patientGraceTimer);
+                patientGraceTimer = null;
+            }
+        }
+
+        // Check if user has an active token queue status on load
+        async function checkActiveQueue() {
+            try {
+                const res = await fetch('/queue-status', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+
+                const overviewQueueToken = document.getElementById('overviewQueueToken');
+                const rejoinContainer = document.getElementById('rejoin-banner-container');
+                const calledBanner = document.getElementById('called-alert-banner');
+
+                // ---- CALLED: grace period active ----
+                if (data.status === 'Called') {
+                    if (overviewQueueToken) {
+                        overviewQueueToken.innerHTML = `Token: <strong>${data.token}</strong> — <span style="color:#d97706;font-weight:700;">&#x1F514; You've been called!</span>`;
+                    }
+                    if (rejoinContainer) rejoinContainer.style.display = 'none';
+                    if (calledBanner) {
+                        document.getElementById('called-banner-msg').textContent =
+                            `Token ${data.token} is being called. Please report to the doctor's room immediately!`;
+                        calledBanner.style.display = 'block';
+                    }
+                    if (data.calledAt) startPatientCountdown(data.calledAt);
+                    document.getElementById('token-success-receipt').style.display = 'none';
+                    document.getElementById('live-queue-dashboard').style.display = 'none';
+                    goTokenStep(1);
+                    return;
+                }
+
+                // ---- LATE: patient missed turn ----
+                if (data.status === 'Late') {
+                    clearPatientCountdown();
+                    if (calledBanner) calledBanner.style.display = 'none';
+                    if (overviewQueueToken) overviewQueueToken.textContent = 'Missed Turn — Rejoin?';
+                    if (rejoinContainer) {
+                        rejoinContainer.innerHTML = `
+                            <div class="p-4 rounded-4 border shadow-sm" style="background: linear-gradient(135deg, #fef2f2, #fff1f2); border-color: #fecdd3 !important;">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;background:#ffe4e6;flex-shrink:0;">
+                                        <i class="fas fa-exclamation-circle fa-lg" style="color:#e11d48;"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold text-dark mb-1" style="font-size:1.05rem;">You Missed Your Turn</h6>
+                                        <p class="text-muted mb-3" style="font-size:0.88rem;line-height:1.4;">
+                                            Token <strong>${data.token}</strong> was called but you did not report in time.
+                                            You have been automatically moved to the end of the waiting queue.
+                                            Click below to rejoin and see your new position.
+                                        </p>
+                                        <button class="btn btn-danger px-4 py-2 border-0 fw-bold" onclick="rejoinQueue('${data.tokenId}')" style="border-radius:10px;font-size:0.85rem;background:#e11d48;color:white;">
+                                            <i class="fas fa-redo me-1"></i> Rejoin Queue (Token ${data.token})
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        rejoinContainer.style.display = 'block';
+                    }
+                    document.getElementById('token-success-receipt').style.display = 'none';
+                    document.getElementById('live-queue-dashboard').style.display = 'none';
+                    goTokenStep(1);
+                    return;
+                }
+
+                // ---- ACTIVE/WAITING: in queue normally ----
+                if (data.position !== null && data.doctorId) {
+                    clearPatientCountdown();
+                    if (calledBanner) calledBanner.style.display = 'none';
+                    if (overviewQueueToken) {
+                        overviewQueueToken.innerHTML = `Token: <strong>${data.token}</strong> (Pos: ${data.position}, ${data.waitTime} min)`;
+                    }
+                    document.getElementById('token-success-receipt').style.display = 'none';
+                    document.getElementById('live-queue-dashboard').style.display = 'block';
+                    if (rejoinContainer) rejoinContainer.style.display = 'none';
+                    goTokenStep(4);
+                    startQueueTracking(data.doctorId);
+                } else {
+                    clearPatientCountdown();
+                    if (calledBanner) calledBanner.style.display = 'none';
+                    if (overviewQueueToken) overviewQueueToken.textContent = 'Not in Queue';
+
+                    if (data.canRejoin && rejoinContainer) {
+                        rejoinContainer.innerHTML = `
+                            <div class="p-4 rounded-4 border shadow-sm mb-4" style="background: linear-gradient(135deg, #fef2f2, #fff1f2); border-color: #fecdd3 !important; text-align: left;">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-danger-subtle text-danger" style="width: 50px; height: 50px; flex-shrink: 0; background-color: #ffe4e6;">
+                                        <i class="fas fa-exclamation-circle fa-lg" style="color: #e11d48;"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1.05rem; text-align: left;">Missed Your Turn or Token Cancelled?</h6>
+                                        <p class="text-muted mb-3" style="font-size: 0.88rem; line-height: 1.4; text-align: left;">
+                                            Your previous token <strong>${data.token}</strong> for <strong>${data.doctorName}</strong> at <strong>${data.hospitalName}</strong> was completed or cancelled.
+                                            If you arrived late and missed your turn, you can rejoin the queue using this token number. You will be placed at the end of the queue.
+                                        </p>
+                                        <button class="btn btn-danger px-4 py-2 border-0 fw-bold" onclick="rejoinQueue('${data.tokenId}')" style="border-radius: 10px; font-size: 0.85rem; background: #e11d48; color: white;">
+                                            <i class="fas fa-redo me-1"></i> Re-join Queue with Token ${data.token}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        rejoinContainer.style.display = 'block';
+                    } else {
+                        if (rejoinContainer) rejoinContainer.style.display = 'none';
+                    }
+
+                    document.getElementById('token-success-receipt').style.display = 'none';
+                    document.getElementById('live-queue-dashboard').style.display = 'none';
+
+                    const step4Visible = document.getElementById('token-step-pane-4').style.display === 'block';
+                    const hospitalListEmpty = !document.getElementById('hospital-list') || !document.getElementById('hospital-list').children.length;
+
+                    if (step4Visible || hospitalListEmpty) {
+                        goTokenStep(1);
+                        loadHospitals();
+                    }
+                }
+            } catch (err) {
+                console.error('Error checking active queue on load:', err);
+                const step4Visible = document.getElementById('token-step-pane-4').style.display === 'block';
+                const hospitalListEmpty = !document.getElementById('hospital-list') || !document.getElementById('hospital-list').children.length;
+                if (step4Visible || hospitalListEmpty) {
+                    goTokenStep(1);
+                    loadHospitals();
+                }
+            }
+        }
+
+        async function rejoinQueue(tokenId) {
+            try {
+                const res = await fetch('/rejoin-queue', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ tokenId })
+                });
+                const result = await res.json();
+                
+                if (res.ok) {
+                    document.getElementById('receipt-token-number').textContent = result.token;
+                    document.getElementById('receipt-token-doctor').textContent = result.doctorName;
+                    document.getElementById('receipt-token-hospital').textContent = result.hospitalName;
+                    document.getElementById('receipt-token-dept').textContent = result.department;
+                    document.getElementById('receipt-token-date').textContent = new Date().toLocaleDateString();
+                    document.getElementById('receipt-token-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    document.getElementById('receipt-token-position').textContent = result.position;
+                    document.getElementById('receipt-token-wait').textContent = `${result.waitTime} Minutes`;
+                    
+                    document.getElementById('token-success-receipt').style.display = 'block';
+                    document.getElementById('live-queue-dashboard').style.display = 'none';
+                    
+                    const rejoinContainer = document.getElementById('rejoin-banner-container');
+                    if (rejoinContainer) rejoinContainer.style.display = 'none';
+
+                    // Also clear the called-alert banner and countdown if visible
+                    const calledBanner = document.getElementById('called-alert-banner');
+                    if (calledBanner) calledBanner.style.display = 'none';
+                    clearPatientCountdown();
+                    
+                    goTokenStep(4);
+                } else {
+                    alert(result.error || 'Failed to rejoin queue');
+                }
+            } catch (err) {
+                alert('Error rejoining queue: ' + err.message);
+            }
+        }
+
+        // Request native notification privileges
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        // DOM Initializations
+        document.addEventListener('DOMContentLoaded', () => {
+            detailsModal = new bootstrap.Modal(document.getElementById('doctorDetailsModal'));
+            queueConfirmModal = new bootstrap.Modal(document.getElementById('queueConfirmModal'));
+            
+            // Check active queue and sync state
+            checkActiveQueue();
+
+            // Poll every 10 seconds to detect 'called' / 'late' status changes in real-time
+            setInterval(checkActiveQueue, 10000);
+
+            // Stars interactive functionality
+            const stars = document.querySelectorAll('#reviewRatingStars i');
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    document.getElementById('reviewRatingVal').value = value;
+                    stars.forEach(s => {
+                        const sVal = parseInt(s.getAttribute('data-value'));
+                        if (sVal <= value) {
+                            s.className = 'fas fa-star text-warning';
+                        } else {
+                            s.className = 'far fa-star text-warning';
+                        }
+                    });
+                });
+            });
+
+            // Review submission handler
+            const submitReviewForm = document.getElementById('submitReviewForm');
+            if (submitReviewForm) {
+                submitReviewForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const doctorId = document.getElementById('reviewDocSelect').value;
+                    const rating = document.getElementById('reviewRatingVal').value;
+                    const comment = document.getElementById('reviewComment').value.trim();
+                    const msg = document.getElementById('submitReviewMessage');
+
+                    if (!doctorId || rating === "0" || !comment) {
+                        msg.innerHTML = '<div class="alert alert-warning py-2 mb-0"><i class="fas fa-exclamation-circle me-1"></i> Please select a doctor, rate, and write feedback.</div>';
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch('/submit-review', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ doctorId: parseInt(doctorId), rating: parseInt(rating), comment })
+                        });
+                        const result = await res.json();
+                        if (res.ok) {
+                            msg.innerHTML = '<div class="alert alert-success py-2 mb-0"><i class="fas fa-check-circle me-1"></i> Review submitted successfully!</div>';
+                            submitReviewForm.reset();
+                            document.getElementById('reviewRatingVal').value = "0";
+                            stars.forEach(s => s.className = 'far fa-star text-warning');
+                            loadReviews();
+                            loadDoctors(); // Refresh doctors ratings
+                        } else {
+                            msg.innerHTML = `<div class="alert alert-danger py-2 mb-0"><i class="fas fa-exclamation-circle me-1"></i> ${result.error}</div>`;
+                        }
+                    } catch (err) {
+                        msg.innerHTML = '<div class="alert alert-danger py-2 mb-0"><i class="fas fa-exclamation-circle me-1"></i> Network error.</div>';
+                    }
+                });
+            }
+
+            // Profile Settings form submission
+            const profileForm = document.getElementById('profileSettingsForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('profileName').value.trim();
+                    const phone = document.getElementById('profilePhone').value.trim();
+                    const msg = document.getElementById('profileSettingsMessage');
+
+                    try {
+                        const res = await fetch('/profile', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ name, phone })
+                        });
+                        const result = await res.json();
+                        if (res.ok) {
+                            msg.innerHTML = '<div class="alert alert-success py-2 mb-0"><i class="fas fa-check-circle me-1"></i> Profile updated successfully!</div>';
+                            user.name = name;
+                            localStorage.setItem('user', JSON.stringify(user));
+                            loadOverview(); // Reload name on dashboard
+                        } else {
+                            msg.innerHTML = `<div class="alert alert-danger py-2 mb-0"><i class="fas fa-exclamation-circle me-1"></i> ${result.error}</div>`;
+                        }
+                    } catch (err) {
+                        msg.innerHTML = '<div class="alert alert-danger py-2 mb-0"><i class="fas fa-exclamation-circle me-1"></i> Connection error.</div>';
+                    }
+                });
+            }
+        });
+
+        // Initialize single page tabs
+        const initialHash = window.location.hash || '#overview';
+        switchTab(initialHash);
+
         updateTime();
         loadDoctors();
-        updateStatus();
-        setInterval(updateStatus, 5000);
+        // ===== CONSULTATION HISTORY =====
+        async function loadConsultations() {
+            const el = document.getElementById('myConsultationsList');
+            el.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border text-primary" role="status"></div></div>';
+            try {
+                const res = await fetch('/my-consultations', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (!res.ok || !data.length) {
+                    el.innerHTML = '<div class="text-center py-5 text-muted"><i class="fas fa-notes-medical fa-2x mb-3 d-block opacity-50"></i><p>No consultation history yet. Consultations completed by your doctor will appear here.</p></div>';
+                    return;
+                }
+                el.innerHTML = data.map(c => `
+                    <div style="border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:14px;background:white;">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                            <div>
+                                <div style="font-weight:700;font-size:1rem;color:#1e293b;">${c.doctor_name}</div>
+                                <div style="font-size:0.78rem;color:#64748b;margin-top:2px;">${c.specialty} · ${c.hospital_name || ''}</div>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <span style="background:#eff6ff;color:#1d4ed8;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;">${c.consultation_type === 'appointment' ? '📅 Appointment' : '🎫 Token'}</span>
+                                <span style="font-size:0.78rem;color:#94a3b8;">${new Date(c.completed_at || c.created_at).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})}</span>
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            ${c.symptoms ? `<div style="background:#f8fafc;border-radius:10px;padding:12px;"><div style="font-size:0.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Symptoms</div><div style="font-size:0.88rem;color:#334155;">${c.symptoms}</div></div>` : ''}
+                            ${c.diagnosis ? `<div style="background:#f0fdf4;border-radius:10px;padding:12px;"><div style="font-size:0.7rem;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Diagnosis</div><div style="font-size:0.88rem;color:#334155;font-weight:600;">${c.diagnosis}</div></div>` : ''}
+                            ${c.recommendations ? `<div style="background:#fffbeb;border-radius:10px;padding:12px;"><div style="font-size:0.7rem;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Recommendations</div><div style="font-size:0.88rem;color:#334155;">${c.recommendations}</div></div>` : ''}
+                            ${c.notes ? `<div style="background:#faf5ff;border-radius:10px;padding:12px;"><div style="font-size:0.7rem;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Notes</div><div style="font-size:0.88rem;color:#334155;">${c.notes}</div></div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                el.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error</div>';
+            }
+        }
+
+        // ===== PRESCRIPTIONS =====
+        async function loadPrescriptions() {
+            const el = document.getElementById('myPrescriptionsList');
+            el.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border text-primary" role="status"></div></div>';
+            try {
+                const res = await fetch('/my-prescriptions', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (!res.ok || !data.length) {
+                    el.innerHTML = '<div class="text-center py-5 text-muted"><i class="fas fa-prescription fa-2x mb-3 d-block opacity-50"></i><p>No prescriptions yet. Prescriptions issued by your doctor will appear here.</p></div>';
+                    return;
+                }
+                // Group by consultation
+                const grouped = {};
+                data.forEach(p => {
+                    const key = p.consultation_id;
+                    if (!grouped[key]) grouped[key] = { doctor: p.doctor_name, specialty: p.specialty, date: p.created_at, diagnosis: p.diagnosis, meds: [] };
+                    grouped[key].meds.push(p);
+                });
+                el.innerHTML = Object.values(grouped).map(g => `
+                    <div style="border:2px solid #e2e8f0;border-radius:16px;padding:24px;margin-bottom:16px;background:white;position:relative;">
+                        <div style="position:absolute;top:-1px;left:24px;background:linear-gradient(135deg,#0f4c81,#1a6fb5);color:white;padding:4px 14px;border-radius:0 0 10px 10px;font-size:0.72rem;font-weight:700;letter-spacing:1px;">℞ PRESCRIPTION</div>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;margin-top:8px;">
+                            <div>
+                                <div style="font-weight:700;color:#1e293b;font-size:0.95rem;">Dr. ${g.doctor}</div>
+                                <div style="font-size:0.78rem;color:#64748b;">${g.specialty}</div>
+                                ${g.diagnosis ? `<div style="margin-top:4px;font-size:0.82rem;color:#475569;"><strong>Diagnosis:</strong> ${g.diagnosis}</div>` : ''}
+                            </div>
+                            <div style="font-size:0.78rem;color:#94a3b8;text-align:right;">${new Date(g.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+                        </div>
+                        <div style="border-top:2px dashed #e2e8f0;padding-top:14px;">
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;">
+                                ${g.meds.map(m => `
+                                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0f4c81;border-radius:10px;padding:12px;">
+                                        <div style="font-weight:700;color:#1e293b;margin-bottom:4px;"><i class="fas fa-pills" style="color:#0f4c81;margin-right:6px;"></i>${m.medicine_name}</div>
+                                        ${m.dosage ? `<div style="font-size:0.8rem;color:#475569;"><i class="fas fa-tint" style="width:16px;"></i> ${m.dosage}</div>` : ''}
+                                        ${m.duration ? `<div style="font-size:0.8rem;color:#475569;"><i class="fas fa-clock" style="width:16px;"></i> ${m.duration}</div>` : ''}
+                                        ${m.instructions ? `<div style="font-size:0.8rem;color:#64748b;margin-top:4px;font-style:italic;">${m.instructions}</div>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                el.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error</div>';
+            }
+        }
+
+        // ===== FOLLOW-UPS =====
+        async function loadFollowups() {
+            const el = document.getElementById('myFollowupsList');
+            el.innerHTML = '<div class="text-center py-5 text-muted"><div class="spinner-border text-primary" role="status"></div></div>';
+            try {
+                const res = await fetch('/my-followups', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (!res.ok || !data.length) {
+                    el.innerHTML = '<div class="text-center py-5 text-muted"><i class="fas fa-calendar-plus fa-2x mb-3 d-block opacity-50"></i><p>No follow-up recommendations yet.</p></div>';
+                    return;
+                }
+                const today = new Date();
+                el.innerHTML = data.map(f => {
+                    const fuDate = new Date(f.followup_date);
+                    const isPast = fuDate < today;
+                    const daysLeft = Math.ceil((fuDate - today) / (1000 * 60 * 60 * 24));
+                    return `
+                        <div style="border:1px solid ${isPast ? '#fecaca' : '#bbf7d0'};border-radius:14px;padding:20px;margin-bottom:12px;background:${isPast ? '#fff5f5' : '#f0fdf4'};display:flex;gap:16px;align-items:flex-start;">
+                            <div style="width:56px;height:56px;border-radius:14px;background:${isPast ? '#fee2e2' : '#dcfce7'};display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+                                <div style="font-size:1.1rem;font-weight:800;color:${isPast ? '#dc2626' : '#15803d'};line-height:1;">${fuDate.getDate()}</div>
+                                <div style="font-size:0.6rem;font-weight:700;color:${isPast ? '#dc2626' : '#15803d'};">${fuDate.toLocaleString('en',{month:'short'}).toUpperCase()}</div>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                                    <div>
+                                        <div style="font-weight:700;color:#1e293b;">${f.doctor_name}</div>
+                                        <div style="font-size:0.78rem;color:#64748b;">${f.specialty}</div>
+                                    </div>
+                                    <span style="background:${isPast ? '#fee2e2' : '#dcfce7'};color:${isPast ? '#dc2626' : '#15803d'};padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;">${isPast ? 'Overdue' : daysLeft === 0 ? 'Today' : daysLeft + ' days left'}</span>
+                                </div>
+                                ${f.diagnosis ? `<div style="margin-top:6px;font-size:0.82rem;color:#475569;"><strong>Related to:</strong> ${f.diagnosis}</div>` : ''}
+                                ${f.notes ? `<div style="margin-top:4px;font-size:0.82rem;color:#64748b;font-style:italic;"><i class="fas fa-sticky-note me-1"></i>${f.notes}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                el.innerHTML = '<div class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Network error</div>';
+            }
+        }
+
     </script>
 </body>
 </html>
