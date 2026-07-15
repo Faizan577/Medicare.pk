@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('./db').verbose();
 const bcrypt = require('bcryptjs');
 const db = new sqlite3.Database('./queue.db');
 

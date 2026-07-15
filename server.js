@@ -1,5 +1,5 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('./db').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Database setup
 const db = new sqlite3.Database('./queue.db', (err) => {
     if (err) console.error(err.message);
-    console.log('Connected to SQLite database.');
+    console.log('Connected to PostgreSQL database.');
 });
 
 // Create tables
